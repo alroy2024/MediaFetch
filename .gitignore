@@ -1,5 +1,54 @@
+# Documentation
+HELP.md
+Documentation.md
+
+# Java / Spring Boot / Maven
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring Tool Suite (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Frontend (Node.js / React / Vite)
+node_modules/
+dist/
+dist-ssr/
+
+*.local
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,20 +56,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# VS Code
 .vscode/*
 !.vscode/extensions.json
-.idea
+
+# OS Files
 .DS_Store
+Thumbs.db
+
+
+# Visual Studio
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
 
-Documentation.md
+# Temporary Files
+*.sw?

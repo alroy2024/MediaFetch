@@ -33,15 +33,15 @@ function Login() {
                             required
                             className="w-full px-4 py-3 mb-6 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-300"
                         />
-                    </form>
 
-                    <div className="mt-4">
-                        <Link to="/Home">
-                            <div className="w-full px-6 py-3 rounded-lg bg-sky-500 hover:bg-green-600 text-white transition-all duration-300 cursor-pointer font-semibold shadow-md hover:shadow-lg text-center">
-                                Login In
-                            </div>
-                        </Link>
-                    </div>
+                        <div className="mt-4">
+                            <Link to="/Home">
+                                <div className="w-full px-6 py-3 rounded-lg bg-sky-500 hover:bg-green-600 text-white transition-all duration-300 cursor-pointer font-semibold shadow-md hover:shadow-lg text-center">
+                                    Login In
+                                </div>
+                            </Link>
+                        </div>
+                    </form>
                 </div>
             </div>
         </>
