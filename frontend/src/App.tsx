@@ -30,7 +30,7 @@ function App() {
         </div>
 
         {/* Right Section */}
-        <div className="flex-1 bg-white p-4 md:p-12 flex justify-center">
+        <div className="flex-1 bg-white p-2 md:p-4 flex justify-center">
           <Login />
         </div>
 

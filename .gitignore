@@ -2,6 +2,9 @@
 HELP.md
 Documentation.md
 
+# Environment Variables
+.env
+
 # Java / Spring Boot / Maven
 target/
 !**/src/main/**/target/

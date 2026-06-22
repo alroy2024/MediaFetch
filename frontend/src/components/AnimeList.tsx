@@ -15,9 +15,9 @@ export default function AnimeList() {
 
     useEffect(() => {
         async function getTopAnimeList() {
-            const response = await fetch('https://api.jikan.moe/v4/top/anime?limit=25');
+            const response = await fetch('http://localhost:8080/fetch');
             const data = await response.json();
-            setList(data.data);
+            setList(data);
         }
         getTopAnimeList();
     }, []);
@@ -33,9 +33,6 @@ export default function AnimeList() {
                         key={anime.mal_id} 
                         className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                     >
-                        <p className='font-medium text-sm h-12 line-clamp-2 overflow-hidden flex items-center justify-center'>
-                            {anime.title}
-                        </p>
                         <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
                             <img 
                                 src={anime.images.jpg.image_url} 
@@ -43,6 +40,9 @@ export default function AnimeList() {
                                 className='w-full h-full object-cover'
                             />
                         </div>
+                        <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            {anime.title}
+                        </p>
                     </div>
                 ))}
             </div>
