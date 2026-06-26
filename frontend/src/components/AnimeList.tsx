@@ -10,24 +10,42 @@ type Anime = {
     }
 };
 
-export default function AnimeList() {
-    const [list, setList] = useState<Anime[]>([]);
+interface Mediaprops{
+    token: string;
+}
 
+export default function AnimeList(props:Mediaprops) {
+
+    const [list, setList] = useState("");
     useEffect(() => {
         async function getTopAnimeList() {
-            const response = await fetch('http://localhost:8080/fetch');
-            const data = await response.json();
+            try{
+            const response = await fetch('http://localhost:8080/fetch',{
+                method: 'GET',
+                headers:{
+                'Authorization': `Bearer ${props.token}`,
+                'Content-Type': 'application/json'
+            }
+            });
+            const data = await response.text();
             setList(data);
+            
         }
+        catch (error) {
+            console.log("Error",error);
+        }
+    }
         getTopAnimeList();
     }, []);
+    
 
     return (
         <div className="w-full max-w-6xl p-6">
             <h2 className="text-xl font-bold mb-4">Top Anime</h2>
             
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                {list.map((anime) => (
+                <p>{list}</p>
+                {/* {list.map((anime) => (
                     
                     <div 
                         key={anime.mal_id} 
@@ -44,7 +62,7 @@ export default function AnimeList() {
                             {anime.title}
                         </p>
                     </div>
-                ))}
+                ))} */}
             </div>
         </div>
     );

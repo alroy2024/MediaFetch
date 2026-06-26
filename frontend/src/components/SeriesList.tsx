@@ -10,8 +10,20 @@ type Series = {
     };
 };
 
-export default function SeriesList() {
+interface Mediaprops{
+    token: string;
+}
+
+export default function SeriesList(props:Mediaprops) {
     const [list, setList] = useState<Series[]>([]);
+
+
+
+    console.log(props.token)
+
+
+
+
 
     useEffect(() => {
         async function fetchSeries() {

@@ -1,9 +1,22 @@
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Anime, Manga, Novel, Series } from "../components/Mulcomponents";
 
 function Home() {
-    const [select, setSelected] = useState("Anime")
+    const navigate = useNavigate()
+    const [token, setToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        const usertoken = localStorage.getItem('token');
+        if (!usertoken) {
+            console.error("No token found, redirecting to login...");
+            navigate('/');
+            return;
+        }
+        setToken(usertoken)
+    }, [navigate])
+
+    const [select, setSelected] = useState("Novel")
 
     return (
         <>
@@ -18,10 +31,19 @@ function Home() {
 
                     <div className="flex items-center gap-3">
                         <button
+                            onClick={() => setSelected("Novel")}
+                            className={`px-4 py-2 rounded-lg transition-all ${select === "Novel"
+                                ? "bg-red-500 text-white"
+                                : "bg-slate-800 hover:bg-slate-700"
+                                }`}
+                        >
+                            Novel
+                        </button>
+                        <button
                             onClick={() => setSelected("Anime")}
                             className={`px-4 py-2 rounded-lg transition-all ${select === "Anime"
-                                    ? "bg-red-500 text-white"
-                                    : "bg-slate-800 hover:bg-slate-700"
+                                ? "bg-red-500 text-white"
+                                : "bg-slate-800 hover:bg-slate-700"
                                 }`}
                         >
                             Anime
@@ -30,28 +52,18 @@ function Home() {
                         <button
                             onClick={() => setSelected("Manga")}
                             className={`px-4 py-2 rounded-lg transition-all ${select === "Manga"
-                                    ? "bg-red-500 text-white"
-                                    : "bg-slate-800 hover:bg-slate-700"
+                                ? "bg-red-500 text-white"
+                                : "bg-slate-800 hover:bg-slate-700"
                                 }`}
                         >
                             Manga
                         </button>
 
                         <button
-                            onClick={() => setSelected("Novel")}
-                            className={`px-4 py-2 rounded-lg transition-all ${select === "Novel"
-                                    ? "bg-red-500 text-white"
-                                    : "bg-slate-800 hover:bg-slate-700"
-                                }`}
-                        >
-                            Novel
-                        </button>
-
-                        <button
                             onClick={() => setSelected("Series")}
                             className={`px-4 py-2 rounded-lg transition-all ${select === "Series"
-                                    ? "bg-red-500 text-white"
-                                    : "bg-slate-800 hover:bg-slate-700"
+                                ? "bg-red-500 text-white"
+                                : "bg-slate-800 hover:bg-slate-700"
                                 }`}
                         >
                             Series
@@ -68,10 +80,16 @@ function Home() {
 
                 <main className="max-w-7xl mx-auto p-8">
                     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                        {select === "Anime" && <Anime />}
-                        {select === "Manga" && <Manga />}
-                        {select === "Novel" && <Novel />}
-                        {select === "Series" && <Series />}
+                        {token ? (
+                            <>
+                                {select === "Anime" && <Anime token={token} />}
+                                {select === "Manga" && <Manga />}
+                                {select === "Novel" && <Novel />}
+                                {select === "Series" && <Series token={token} />}
+                            </>
+                        ) : (
+                            <div className="text-center text-slate-400">Loading...</div>
+                        )}
                     </div>
                 </main>
             </div>

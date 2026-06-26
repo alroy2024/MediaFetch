@@ -1,7 +1,11 @@
 import AnimeList from "./AnimeList"
 import SeriesList from "./SeriesList"
 
-function Anime() {
+interface Mediaprops{
+    token: string;
+}
+
+function Anime(props:Mediaprops) {
     return (
         <>
             <div>
@@ -11,7 +15,7 @@ function Anime() {
                     Latest Updates
                 </div>
                 <div>
-                    <AnimeList />               
+                    <AnimeList token={props.token}/>               
                 </div>
             </div>
         </>)
@@ -46,7 +50,7 @@ function Novel() {
             </div>
         </>)
 }
-function Series() {
+function Series(props:Mediaprops) {
     return (
         <>
             <div>
@@ -58,8 +62,8 @@ function Series() {
                 <div>
                     Trending Variable
                 </div>
-                                <div>
-                    <SeriesList />               
+                <div>
+                    <SeriesList token={props.token}/>               
                 </div>
             </div>
         </>)

@@ -11,10 +11,7 @@ public class mediacontroller {
 
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch() {
-        RestTemplate restTemplate = new RestTemplate();
-        Map<String, Object> Response = restTemplate
-                .getForObject("https://api.jikan.moe/v4/top/anime?filter=airing&limit=5", Map.class);
-        Object data = Response.get("data");
-        return ResponseEntity.ok(data);
+        
+        return ResponseEntity.ok("Hello");
     }
 }
