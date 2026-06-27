@@ -1,17 +1,13 @@
-import {useState,useEffect} from 'react'
-import {useNavigate } from 'react-router-dom';
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
-export function useValidToken(){
+export function useValidToken() {
     const navigate = useNavigate();
-    const [token, setToken] = useState<string | null>(null);
+    const token = localStorage.getItem("token");
     useEffect(() => {
-        const usertoken = localStorage.getItem('token');
-        if (!usertoken) {
-            console.error("No token found, redirecting to login...");
+        if (!token) {
             navigate('/');
-            return;
         }
-        setToken(usertoken);
-    },[navigate])
+    }, [token, navigate])
     return token
 }

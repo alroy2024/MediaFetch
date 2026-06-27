@@ -12,13 +12,13 @@ import lombok.AllArgsConstructor;
 @Entity
 @Table(name = "users")
 @Data
-@NoArgsConstructor 
+@NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails{
-    
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -30,17 +30,16 @@ public class User implements UserDetails{
     private String password;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
-            new SimpleGrantedAuthority("ROLE_USER")
-        );
+                new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getUsername() {
-        return this.username; 
+        return this.username;
     }
-    
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class mediacontroller {
+public class MediaController {
 
     @GetMapping("/fetch")
     public ResponseEntity<?> fetch() {
-        
+
         return ResponseEntity.ok("Hello");
     }
 }

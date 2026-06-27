@@ -10,15 +10,15 @@ import com.mediafetch.backend.auth.dto.LoginRequest;
 import com.mediafetch.backend.auth.model.User;
 import java.util.Optional;
 
-@Service    
+@Service
 @RequiredArgsConstructor
 public class UserLoginService {
-    
-    final UserRepository userRepository;
-    final PasswordEncoder passwordEncoder;
-    final JwtService jwtService;
 
-    public AuthResponse userLogin(LoginRequest request){
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
+    public AuthResponse userLogin(LoginRequest request) {
 
         Optional<User> userOptional = userRepository.findByUsername(request.username());
 
@@ -32,6 +32,6 @@ public class UserLoginService {
 
         User user = userOptional.get();
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token,user.getUsername(),user.getEmail());
+        return new AuthResponse(token, user.getUsername(), user.getEmail());
     }
 }

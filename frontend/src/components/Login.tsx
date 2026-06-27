@@ -21,10 +21,10 @@ function Login() {
                 return
             }
             localStorage.setItem("token", data.token);
-            navigate("/home")
+            navigate("/Home")
         }
         catch {
-            setFormErrors([]);
+            setFormErrors(["Cannot connect to the server"]);
         }
     }
     return (
@@ -78,7 +78,7 @@ function Login() {
                             <p className="text-sky-600 text-center mt-3 ">
                                 <button
                                     type="button"
-                                    onClick={() => { setLogin(!login), setFormErrors([]) }}
+                                    onClick={() => { setLogin(!login); setFormErrors([]); }}
                                     className="font-medium hover:underline focus:outline-none"
                                 >
                                     {login ? 'Create a new account' : 'Already have an account?'}

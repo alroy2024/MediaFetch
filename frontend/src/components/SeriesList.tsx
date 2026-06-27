@@ -6,15 +6,15 @@ type Series = {
         name: string;
         image: {
             medium: string;
-        } 
+        }
     };
 };
 
-interface Mediaprops{
+interface Mediaprops {
     token: string;
 }
 
-export default function SeriesList(props:Mediaprops) {
+export default function SeriesList(props: Mediaprops) {
     const [list, setList] = useState<Series[]>([]);
 
 
@@ -34,7 +34,7 @@ export default function SeriesList(props:Mediaprops) {
                 setList(data);
                 console.log(data)
             } catch (error) {
-                console.error("Failed to load web novels:", error);
+                console.error("Failed to load series:", error);
             }
         }
         fetchSeries();
@@ -42,7 +42,7 @@ export default function SeriesList(props:Mediaprops) {
 
     return (
         <div className="w-full max-w-6xl p-6">
-            <h2 className="text-xl font-bold mb-4">Trending Web Novels</h2>
+            <h2 className="text-xl font-bold mb-4">Trending Series</h2>
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                 {list.map((Series) => (
                     <div key={Series.show.id} className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'>

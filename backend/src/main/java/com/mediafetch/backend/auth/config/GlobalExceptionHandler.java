@@ -7,6 +7,7 @@ import com.mediafetch.backend.auth.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.FieldError;
 import java.util.*;
 
@@ -26,5 +27,11 @@ public class GlobalExceptionHandler {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
         }
         return new ErrorResponse(String.join(", ", errors));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return new ErrorResponse("User with this email or username already exists.");
     }
 }
