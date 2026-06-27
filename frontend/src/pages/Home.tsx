@@ -1,23 +1,12 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { Anime, Manga, Novel, Series } from "../components/Mulcomponents";
+import { useValidToken } from '../hooks/useValidToken';
 
 function Home() {
-    const navigate = useNavigate()
-    const [token, setToken] = useState<string | null>(null);
-
-    useEffect(() => {
-        const usertoken = localStorage.getItem('token');
-        if (!usertoken) {
-            console.error("No token found, redirecting to login...");
-            navigate('/');
-            return;
-        }
-        setToken(usertoken)
-    }, [navigate])
 
     const [select, setSelected] = useState("Novel")
-
+    const token = useValidToken()
     return (
         <>
             <div className="min-h-screen bg-slate-950 text-white md:w-full w-max">

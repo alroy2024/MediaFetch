@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'
+import { authenticate } from '../services/auth';
 
 function Login() {
     const navigate = useNavigate()
@@ -9,43 +10,28 @@ function Login() {
     const [login, setLogin] = useState(false)
     const [formErrors, setFormErrors] = useState<string[]>([]);
 
-    const handlesubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setFormErrors([])
+        setFormErrors([]);
 
-        try{
-            const endpoint = login ? 'http://localhost:8080/auth/login' : 'http://localhost:8080/auth/register'
-            const params = login ? { username, password } : { username, password, email }
-
-            console.log('Logging in with:', username)
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(params)
-            })
-            const Response = await response.json()
+        try {
+            const { response, data } = await authenticate(username, password, email, login);
             if (!response.ok) {
-                const error = Response.message.split(',')
-                setFormErrors(error);
+                setFormErrors(data.message.split(","));
                 return
             }
-            console.log(Response)
-            const token = Response.token
-            localStorage.setItem('token', token);
-            navigate('/home')
-
+            localStorage.setItem("token", data.token);
+            navigate("/home")
         }
-        catch (error) {
-            setFormErrors(['An error occurred. Please try again.']);
+        catch {
+            setFormErrors([]);
         }
     }
     return (
         <>
             <div className=" flex items-center justify-center">
                 <div className="bg-white p-4 rounded-2xl shadow-xl w-96 border border-slate-200">
-                    <form onSubmit={handlesubmit}>
+                    <form onSubmit={handleSubmit}>
                         <h1 className="text-2xl font-bold text-center text-slate-800 mb-8">
                             {login ? 'Login' : 'Sign Up'}
                         </h1>
@@ -92,7 +78,7 @@ function Login() {
                             <p className="text-sky-600 text-center mt-3 ">
                                 <button
                                     type="button"
-                                    onClick={() => {setLogin(!login),setFormErrors([])}}
+                                    onClick={() => { setLogin(!login), setFormErrors([]) }}
                                     className="font-medium hover:underline focus:outline-none"
                                 >
                                     {login ? 'Create a new account' : 'Already have an account?'}
