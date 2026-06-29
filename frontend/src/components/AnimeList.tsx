@@ -15,6 +15,7 @@ interface MulAnimes{
     Trending: {data:Anime[]},
     MustWatch: {data:Anime[]}
 }
+
 interface Mediaprops{
     token: string;
 }
@@ -43,8 +44,17 @@ export default function AnimeList(props:Mediaprops) {
     }, []);
     console.log(Mul)
 
-
-    return (<>
+   if (!Mul) {
+    return (
+        <div className="flex items-center justify-center p-40">
+            <p className="text-lg font-medium text-gray-600 animate-pulse">
+                Loading Please Wait...
+            </p>
+        </div>
+    );
+}
+    return (
+    <>
         <div className="w-full max-w-6xl p-6">
             <h2 className="text-xl font-bold mb-4">Top Anime</h2>
             
