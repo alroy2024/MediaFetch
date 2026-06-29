@@ -4,19 +4,24 @@ type Anime = {
     mal_id: number;
     title: string;
     images: {
-        jpg: {
-            image_url: string;
+        webp: {
+            large_image_url: string;
         }
     }
 };
 
+interface MulAnimes{
+    TopAnime: {data:Anime[]},
+    Trending: {data:Anime[]},
+    MustWatch: {data:Anime[]}
+}
 interface Mediaprops{
     token: string;
 }
 
 export default function AnimeList(props:Mediaprops) {
+    const [Mul, setMul] = useState<MulAnimes| null>(null);
 
-    const [list, setList] = useState("");
     useEffect(() => {
         async function getTopAnimeList() {
             try{
@@ -26,34 +31,32 @@ export default function AnimeList(props:Mediaprops) {
                 'Authorization': `Bearer ${props.token}`,
                 'Content-Type': 'application/json'
             }
-            });
-            const data = await response.text();
-            setList(data);
-            
+            }); 
+            const data = await response.json();
+            setMul(data)
         }
-        catch (error) {
+        catch (error) { 
             console.log("Error",error);
         }
     }
         getTopAnimeList();
     }, []);
-    
+    console.log(Mul)
 
-    return (
+
+    return (<>
         <div className="w-full max-w-6xl p-6">
             <h2 className="text-xl font-bold mb-4">Top Anime</h2>
             
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                <p>{list}</p>
-                {/* {list.map((anime) => (
-                    
+                {Mul?.TopAnime.data.map((anime: Anime) => ( 
                     <div 
                         key={anime.mal_id} 
                         className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                     >
                         <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
                             <img 
-                                src={anime.images.jpg.image_url} 
+                                src={anime.images.webp.large_image_url} 
                                 alt={anime.title} 
                                 className='w-full h-full object-cover'
                             />
@@ -62,8 +65,55 @@ export default function AnimeList(props:Mediaprops) {
                             {anime.title}
                         </p>
                     </div>
-                ))} */}
+                ))}
             </div>
         </div>
+        <div className="w-full max-w-6xl p-6">
+            <h2 className="text-xl font-bold mb-4">Trending Anime</h2>
+            
+            <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                {Mul?.Trending.data.map((anime: Anime) => ( 
+                    <div 
+                        key={anime.mal_id} 
+                        className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                    >
+                        <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <img 
+                                src={anime.images.webp.large_image_url} 
+                                alt={anime.title} 
+                                className='w-full h-full object-cover'
+                            />
+                        </div>
+                        <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            {anime.title}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </div>
+                <div className="w-full max-w-6xl p-6">
+            <h2 className="text-xl font-bold mb-4">MustWatch Anime</h2>
+            
+            <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                {Mul?.MustWatch.data.map((anime: Anime) => ( 
+                    <div 
+                        key={anime.mal_id} 
+                        className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                    >
+                        <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <img 
+                                src={anime.images.webp.large_image_url} 
+                                alt={anime.title} 
+                                className='w-full h-full object-cover'
+                            />
+                        </div>
+                        <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            {anime.title}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </div>
+        </>
     );
 }
