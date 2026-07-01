@@ -1,21 +1,21 @@
 import AnimeList from "./AnimeList"
 import SeriesList from "./SeriesList"
-
-interface Mediaprops{
+import MyList from "./MyList"
+interface Mediaprops {
     token: string;
 }
 
-function Anime(props:Mediaprops) {
+function Anime(props: Mediaprops) {
     return (
         <>
             <div>
-                <h2>Anime Component</h2>
-                <button>Add Variable</button>
                 <div>
-                    Latest Updates
+                    <MyList 
+                    // token={props.token}
+                     />
                 </div>
                 <div>
-                    <AnimeList token={props.token}/>               
+                    <AnimeList token={props.token} />
                 </div>
             </div>
         </>)
@@ -50,7 +50,7 @@ function Novel() {
             </div>
         </>)
 }
-function Series(props:Mediaprops) {
+function Series(props: Mediaprops) {
     return (
         <>
             <div>
@@ -63,7 +63,7 @@ function Series(props:Mediaprops) {
                     Trending Variable
                 </div>
                 <div>
-                    <SeriesList token={props.token}/>               
+                    <SeriesList token={props.token} />
                 </div>
             </div>
         </>)

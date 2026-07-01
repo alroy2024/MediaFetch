@@ -11,9 +11,8 @@ type Anime = {
 };
 
 interface MulAnimes{
-    TopAnime: {data:Anime[]},
-    Trending: {data:Anime[]},
-    MustWatch: {data:Anime[]}
+    Upcoming: {data:Anime[]},
+    Airing: {data:Anime[]}
 }
 
 interface Mediaprops{
@@ -56,10 +55,10 @@ export default function AnimeList(props:Mediaprops) {
     return (
     <>
         <div className="w-full max-w-6xl p-6">
-            <h2 className="text-xl font-bold mb-4">Top Anime</h2>
+            <h2 className="text-xl font-bold mb-4">Airing Anime</h2>
             
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                {Mul?.TopAnime.data.map((anime: Anime) => ( 
+                {Mul?.Airing.data.map((anime: Anime) => ( 
                     <div 
                         key={anime.mal_id} 
                         className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
@@ -79,33 +78,10 @@ export default function AnimeList(props:Mediaprops) {
             </div>
         </div>
         <div className="w-full max-w-6xl p-6">
-            <h2 className="text-xl font-bold mb-4">Trending Anime</h2>
+            <h2 className="text-xl font-bold mb-4">Upcoming Anime</h2>
             
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                {Mul?.Trending.data.map((anime: Anime) => ( 
-                    <div 
-                        key={anime.mal_id} 
-                        className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
-                    >
-                        <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
-                            <img 
-                                src={anime.images.webp.large_image_url} 
-                                alt={anime.title} 
-                                className='w-full h-full object-cover'
-                            />
-                        </div>
-                        <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
-                            {anime.title}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        </div>
-                <div className="w-full max-w-6xl p-6">
-            <h2 className="text-xl font-bold mb-4">MustWatch Anime</h2>
-            
-            <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                {Mul?.MustWatch.data.map((anime: Anime) => ( 
+                {Mul?.Upcoming.data.map((anime: Anime) => ( 
                     <div 
                         key={anime.mal_id} 
                         className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
