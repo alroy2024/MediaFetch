@@ -1,4 +1,4 @@
-package com.mediafetch.backend.manga.config;
+package com.mediafetch.backend.media.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

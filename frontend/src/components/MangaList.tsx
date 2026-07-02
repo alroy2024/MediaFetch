@@ -4,18 +4,18 @@ interface Mediaprops {
     token: string;
 }
 
-interface Manga {
+interface MangaList {
     data: {
-        releasingManga: {
-            media: MangaList[]
+        releasing: {
+            media: Manga[]
         }
-        finishedManga: { 
-            media: MangaList[] 
+        finished: { 
+            media: Manga[] 
         }
     }
 };
 
-type MangaList = {
+type Manga = {
         id: number
         title: {
             romaji: string
@@ -28,7 +28,8 @@ type MangaList = {
 
 
 export default function Manga(props: Mediaprops) {
-    const [mangaList, setMangaList] = useState<Manga | null>(null);
+    const [mangaList, setMangaList] = useState<MangaList | null>(null);
+
     useEffect(() => {
         async function getMangaList() {
             try {
@@ -41,13 +42,12 @@ export default function Manga(props: Mediaprops) {
                 });
                 const data = await response.json();
                 setMangaList(data);
-                console.log(data)
             } catch (error) {
                 console.error('Error fetching manga list:', error);
             }
         }
         getMangaList();
-    }, [])
+    }, []);
 
     if (!mangaList) {
         return (
@@ -65,7 +65,7 @@ export default function Manga(props: Mediaprops) {
                 <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                    {mangaList.data.releasingManga.media.map((manga: MangaList) => (
+                    {mangaList.data.releasing.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
@@ -88,7 +88,7 @@ export default function Manga(props: Mediaprops) {
                 <h2 className="text-xl font-bold mb-4">Finished Manga</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
-                    {mangaList.data.finishedManga.media.map((manga: MangaList) => (
+                    {mangaList.data.finished.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'

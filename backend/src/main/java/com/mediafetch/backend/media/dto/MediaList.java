@@ -1,12 +1,12 @@
-package com.mediafetch.backend.manga.dto;
+package com.mediafetch.backend.media.dto;
 
 import java.util.List;
 
-public record MangaList(PageData data) {
+public record MediaList(PageData data) {
 
     public record PageData(
-            PageContainer releasingManga,
-            PageContainer finishedManga
+            PageContainer releasing,
+            PageContainer finished
 
     ) {
 
