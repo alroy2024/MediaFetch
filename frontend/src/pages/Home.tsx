@@ -72,7 +72,7 @@ function Home() {
                         {token ? (
                             <>
                                 {select === "Anime" && <Anime token={token} />}
-                                {select === "Manga" && <Manga />}
+                                {select === "Manga" && <Manga token={token}/>}
                                 {select === "Novel" && <Novel />}
                                 {select === "Series" && <Series token={token} />}
                             </>

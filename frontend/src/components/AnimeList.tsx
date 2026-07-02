@@ -36,7 +36,7 @@ export default function AnimeList(props:Mediaprops) {
             setMul(data)
         }
         catch (error) { 
-            console.log("Error",error);
+            console.log('Error fetching manga list:', error);
         }
     }
         getTopAnimeList();
