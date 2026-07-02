@@ -18,11 +18,24 @@ public class MangaFetchService {
 
     private static final String query = """
     query ($page: Int, $perPage: Int) {
-        Page(page: $page, perPage: $perPage) {
+        releasingManga : Page(page: $page, perPage: $perPage) {
             media(status: RELEASING, type: MANGA, sort: [POPULARITY_DESC]) {
                 id
                 title {
                     romaji
+                    english
+                }
+                coverImage {
+                    large
+                }
+            }
+        }
+        finishedManga : Page(page: $page, perPage: $perPage) {
+            media(status: FINISHED, type: MANGA, sort: [POPULARITY_DESC]){
+                id
+                title {
+                    romaji
+                    english
                 }
                 coverImage {
                     large

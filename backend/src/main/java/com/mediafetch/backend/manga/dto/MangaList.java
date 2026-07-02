@@ -1,13 +1,13 @@
 package com.mediafetch.backend.manga.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public record MangaList(PageData data) {
 
     public record PageData(
-            @JsonProperty("Page")
-            PageContainer page
+            PageContainer releasingManga,
+            PageContainer finishedManga
+
     ) {
 
         public record PageContainer(List<Media> media) {
@@ -18,7 +18,7 @@ public record MangaList(PageData data) {
                     CoverImage coverImage  
             ) {
 
-                public record Title(String romaji) {
+                public record Title(String romaji, String english) {
                 }
 
                 public record CoverImage(String large) {
