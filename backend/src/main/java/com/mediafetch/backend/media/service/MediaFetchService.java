@@ -45,7 +45,6 @@ public class MediaFetchService{
     }
 """;
 
-
     public MediaList fetchMedia(String type) {
         Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "type", type);
         return webClient.post()
