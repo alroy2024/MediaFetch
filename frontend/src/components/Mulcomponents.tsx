@@ -2,6 +2,7 @@ import AnimeList from "./AnimeList"
 import SeriesList from "./SeriesList"
 import MyList from "./MyList"
 import MangaList from "./MangaList"
+
 interface Mediaprops {
     token: string;
 }
@@ -11,9 +12,7 @@ function Anime(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MyList 
-                    // token={props.token}
-                     />
+                    <MyList token={props.token} />
                 </div>
                 <div>
                     <AnimeList token={props.token} />

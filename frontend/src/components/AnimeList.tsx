@@ -60,7 +60,7 @@ export default function AnimeList(props: Mediaprops) {
     }
     return (
         <>
-            <div className="w-full max-w-6xl p-6">
+            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Airing Anime</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
@@ -69,37 +69,37 @@ export default function AnimeList(props: Mediaprops) {
                             key={anime.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                         >
-                            <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={anime.coverImage.large}
                                     alt={anime.title.english ?? anime.title.romaji}
                                     className='w-full h-full object-cover'
                                 />
                             </div>
-                            <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
                                 {anime.title.english ?? anime.title.romaji}
                             </p>
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="w-full max-w-6xl p-6">
+            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Upcoming Anime</h2>
 
-                <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth '>
                     {animeList.data.finished.media.map((anime: Anime) => (
                         <div
                             key={anime.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                         >
-                            <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200 '>
                                 <img
                                     src={anime.coverImage.large}
                                     alt={anime.title.english ?? anime.title.romaji}
                                     className='w-full h-full object-cover'
                                 />
                             </div>
-                            <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
                                 {anime.title.english ?? anime.title.romaji}
                             </p>
                         </div>

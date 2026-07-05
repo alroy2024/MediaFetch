@@ -61,7 +61,7 @@ export default function Manga(props: Mediaprops) {
 
     return (
         <>
-            <div className="w-full max-w-6xl p-6">
+            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
@@ -70,21 +70,21 @@ export default function Manga(props: Mediaprops) {
                             key={manga.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                         >
-                            <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
                                     alt={manga.title.english ?? manga.title.romaji}
                                     className='w-full h-full object-content'
                                 />
                             </div>
-                            <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
                                 {manga.title.english ?? manga.title.romaji}
                             </p>
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="w-full max-w-6xl p-6">
+            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Finished Manga</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
@@ -93,14 +93,14 @@ export default function Manga(props: Mediaprops) {
                             key={manga.id}
                             className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
                         >
-                            <div className='w-full h-72 overflow-hidden rounded-lg shadow-md hover:scale-109 transition-transform duration-200'>
+                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
                                     alt={manga.title.english ?? manga.title.romaji}
                                     className='w-full h-full object-content'
                                 />
                             </div>
-                            <p className='font-medium text-sm h-16 line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
                                 {manga.title.english ?? manga.title.romaji}
                             </p>
                         </div>
