@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SearchBar from "./SearchBar"
 
 interface Mediaprops {
   token: string;
@@ -22,69 +23,6 @@ type Anime = {
     large: string;
   };
 };
-
-interface AddbarProps {
-  onClose: () => void;
-}
-
-function Addbar({ onClose }: AddbarProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/70 backdrop-blur-sm animate-fade-in"
-      onClick={onClose}
-    >
-      <div
-        className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-2xl flex flex-col gap-4 animate-scale-up"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <h3 className="text-lg font-medium text-gray-200">Search Anime</h3>
-        </div>
-
-        {/* Search Input */}
-        <div className="relative">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-5 h-5 absolute left-4 top-3.5 text-zinc-500"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z"
-            />
-          </svg>
-          <input
-            autoFocus
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Type anime title..."
-            className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-12 pr-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all text-base"
-          />
-        </div>
-
-        <div className="flex flex-col gap-3">
-          {searchQuery && (
-            <div className="text-xs text-zinc-500">
-              Searching for: <span className="text-zinc-300 font-mono font-medium">{searchQuery}</span>
-            </div>
-          )}
-          <div className="text-center py-8 text-zinc-400 border border-dashed border-zinc-800 rounded-lg bg-zinc-950/30">
-            Results UI will go here...
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 const MyList = (props: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -183,7 +121,7 @@ const MyList = (props: Mediaprops) => {
         </div>
       </div>
 
-      {isOpen && <Addbar onClose={() => setIsOpen(false)} />}
+      {isOpen && <SearchBar onClose={() => setIsOpen(false)} token={props.token} />}
 
       {isLoading ? (
         <p className="text-gray-400 py-10 text-center">Loading list items...</p>

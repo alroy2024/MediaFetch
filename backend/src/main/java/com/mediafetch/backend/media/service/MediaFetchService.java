@@ -31,7 +31,7 @@ public class MediaFetchService{
             }
         }
         finished : Page(page: $page, perPage: $perPage) {
-            media(status: FINISHED, type: $type, sort: [POPULARITY_DESC]){
+            media(status: NOT_YET_RELEASED, type: $type, sort: [POPULARITY_DESC]){
                 id
                 title {
                     romaji
