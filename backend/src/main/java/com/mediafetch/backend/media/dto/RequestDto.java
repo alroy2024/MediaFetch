@@ -1,7 +1,6 @@
 package com.mediafetch.backend.media.dto;
 
-public record SearchRequestDto(
+public record RequestDto(
     String searchQuery
 ) {
-    
 }

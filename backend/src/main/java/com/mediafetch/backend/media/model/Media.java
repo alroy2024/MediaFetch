@@ -16,7 +16,7 @@ public class Media {
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
+    private String title;
 
     @Column(nullable = false)
     private String image;

@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mediafetch.backend.media.dto.AddDto;
 import com.mediafetch.backend.media.dto.MediaList;
 import com.mediafetch.backend.media.dto.MediaSearchDto;
-import com.mediafetch.backend.media.dto.SearchRequestDto;
-import com.mediafetch.backend.media.service.MediaFetchService;
-import com.mediafetch.backend.media.service.MediaSearchService;
+import com.mediafetch.backend.media.dto.RequestDto;
+import com.mediafetch.backend.media.service.*;
 
 import lombok.RequiredArgsConstructor;
     
@@ -20,6 +20,8 @@ public class MediaController {
 
     private final MediaFetchService mediaFetchService;
     private final MediaSearchService mediaSearchService;
+    private final MediaAddService mediaAddService;
+
     
     @GetMapping("/manga")
     @Cacheable("Manga")
@@ -34,8 +36,12 @@ public class MediaController {
     }
 
     @PostMapping("/search")
-    public MediaSearchDto fetch(@RequestBody SearchRequestDto request){
+    public MediaSearchDto fetch(@RequestBody RequestDto request){
         return mediaSearchService.mediaSearch(request);
     }
 
+    @PostMapping("/add")
+    public void add(@RequestBody AddDto request){
+        mediaAddService.mediaAdd(request);
+    }
 }

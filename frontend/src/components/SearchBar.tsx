@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import  useAddToList  from '../hooks/useAddToList';
+
 
 interface SearchBarProps {
   onClose: () => void;
@@ -122,7 +124,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); 
-                      console.log("Adding anime ID:", anime.id);
+                      useAddToList(anime.id,anime.title.english,anime.title.romaji,anime.coverImage.large,token);
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >

@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.mediafetch.backend.media.dto.GraphQlRequest;
 import com.mediafetch.backend.media.dto.MediaSearchDto;
-import com.mediafetch.backend.media.dto.SearchRequestDto;
+import com.mediafetch.backend.media.dto.RequestDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,7 @@ public class MediaSearchService {
             }
             """;
 
-    public MediaSearchDto mediaSearch(SearchRequestDto request) {
+    public MediaSearchDto mediaSearch(RequestDto request) {
         Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "title", request.searchQuery(),"type", "ANIME");
         return webClient.post()
         .bodyValue(new GraphQlRequest(query, variables))
