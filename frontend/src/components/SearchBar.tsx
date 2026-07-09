@@ -62,7 +62,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
       } finally {
         setIsLoading(false);
       }
-    }, 400);
+    }, 600);
     return () => clearTimeout(searchRequest);
   }, [searchQuery, token]);
 

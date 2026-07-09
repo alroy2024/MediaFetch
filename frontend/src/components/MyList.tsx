@@ -1,47 +1,35 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar"
+import  useRemoveFromList  from '../hooks/useRemoveFromList';
 
 interface Mediaprops {
   token: string;
 }
 
-interface AnimeList {
-  data: {
-    releasing: {
-      media: Anime[];
-    };
-  };
-}
-
-type Anime = {
+interface Anime {
   id: number;
-  title: {
-    romaji: string;
-    english: string;
-  };
-  coverImage: {
-    large: string;
-  };
+  title: string;
+  image: string;
 };
 
-const MyList = (props: Mediaprops) => {
+const MyList = ({token}: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState({ start: 0, end: 12 });
-  const [animeList, setAnimeList] = useState<AnimeList | null>(null);
+  const [myList, setmyList] = useState<Anime[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function getAnimeList() {
       try {
-        const response = await fetch("http://localhost:8080/anime", {
+        const response = await fetch("http://localhost:8080/mylist", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${props.token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
         const data = await response.json();
-        setAnimeList(data);
+        setmyList(data);
       } catch (error) {
         console.error("Error fetching Anime list:", error);
       } finally {
@@ -49,9 +37,9 @@ const MyList = (props: Mediaprops) => {
       }
     }
     getAnimeList();
-  }, [props.token]);
+  }, [token,isOpen]);
 
-  const mediaItems = animeList?.data?.releasing?.media || [];
+  const mediaItems = myList || [];
   const totalMedia = mediaItems.length;
 
   const increment = () => {
@@ -73,7 +61,7 @@ const MyList = (props: Mediaprops) => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#0e0e0e] text-white p-6 font-sans rounded-xl">
+    <div className="w-full bg-[#0e0e0e] text-white p-6 font-sans rounded-xl">
       <div className="flex justify-between items-end mb-6 border-b border-gray-800 pb-2">
         <h2 className="text-2xl font-medium tracking-wide">My List</h2>
 
@@ -121,7 +109,7 @@ const MyList = (props: Mediaprops) => {
         </div>
       </div>
 
-      {isOpen && <SearchBar onClose={() => setIsOpen(false)} token={props.token} />}
+      {isOpen && <SearchBar onClose={() => setIsOpen(false)} token={token} />}
 
       {isLoading ? (
         <p className="text-gray-400 py-10 text-center">Loading list items...</p>
@@ -131,15 +119,16 @@ const MyList = (props: Mediaprops) => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-8">
           {mediaItems.slice(page.start, page.end).map((anime) => (
             <div key={anime.id} className="flex flex-col gap-2 group cursor-pointer">
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800">
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
+              onClick={() => useRemoveFromList(anime.id,token)}>
                 <img
-                  src={anime.coverImage.large}
-                  alt={anime.title.english ?? anime.title.romaji}
+                  src={anime.image}
+                  alt={anime.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
               </div>
               <p className="font-medium text-sm text-gray-200 line-clamp-2 text-left pr-2">
-                  {anime.title.english ?? anime.title.romaji}
+                  {anime.title}
               </p>
             </div>
           ))}
