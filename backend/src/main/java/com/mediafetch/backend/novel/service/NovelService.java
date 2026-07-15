@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.mediafetch.backend.novel.dto.NovelDto;
+import com.mediafetch.backend.novel.dto.RequestDto;
 import com.microsoft.playwright.*;
 
 @Service
@@ -27,7 +28,7 @@ public class NovelService {
     public void init() {
         logger.info("Initializing Playwright and launching browser...");
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
     }
 
     @PreDestroy
@@ -37,21 +38,25 @@ public class NovelService {
         if (playwright != null) playwright.close();
     }
 
-    public List<NovelDto> getNames(String query) {
+    public List<NovelDto> getNames(RequestDto requestDto) {
+        String query = requestDto.searchQuery();
         List<NovelDto> results = new ArrayList<>();
 
         try (BrowserContext context = browser.newContext();
-             Page page = context.newPage()) {
+            Page page = context.newPage()) {
 
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
             page.navigate("https://www.webnovel.com/search?keywords=" + encodedQuery);
 
-            page.waitForSelector("h3");
-            List<String> titles = page.locator("h3").allInnerTexts();
+            page.waitForSelector("ul.j_result_wrap");
+            Locator books = page.locator("ul.j_result_wrap li:has(a.g_thumb)");
+
 
             // Map strings to DTOs
-            for (String title : titles) {
-                NovelDto dto = new NovelDto(title);
+            for (Locator item : books.all()) {
+                String title = item.locator("h3").innerText();
+                String id = item.locator("a.g_thumb").getAttribute("data-bookid");
+                NovelDto dto = new NovelDto(title,id);
                 results.add(dto);
             }
 

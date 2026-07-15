@@ -18,6 +18,8 @@ const MyList = ({token}: Mediaprops) => {
   const [myList, setmyList] = useState<Anime[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const handleRemove = useRemoveFromList(); 
+
   useEffect(() => {
     async function getAnimeList() {
       try {
@@ -120,7 +122,7 @@ const MyList = ({token}: Mediaprops) => {
           {mediaItems.slice(page.start, page.end).map((anime) => (
             <div key={anime.id} className="flex flex-col gap-2 group cursor-pointer">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
-              onClick={() => useRemoveFromList(anime.id,token)}>
+              onClick={() => handleRemove(anime.id,token)}>
                 <img
                   src={anime.image}
                   alt={anime.title}

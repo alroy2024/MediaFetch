@@ -24,25 +24,21 @@ function Manga(props: Mediaprops) {
     return (
         <>
             <div>
-                <h2>Manga Component</h2>
-                <button>Add Variable</button>
                 <div>
-                    Latest Updates
+                    <MyList token={props.token} />
                 </div>
                 <div>
-                    <MangaList token={props.token}/>
+                    <MangaList token={props.token} />
                 </div>
             </div>
         </>)
 }
-function Novel() {
+function Novel(props: Mediaprops) {
     return (
         <>
             <div>
-                <h2>Novel Component</h2>
-                <button>Add Variable</button>
                 <div>
-                    Latest Updates
+                    <MyList token={props.token} />
                 </div>
                 <div>
                     Trending Variable
