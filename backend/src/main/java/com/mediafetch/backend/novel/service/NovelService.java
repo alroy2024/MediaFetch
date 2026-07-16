@@ -28,7 +28,7 @@ public class NovelService {
     public void init() {
         logger.info("Initializing Playwright and launching browser...");
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
     }
 
     @PreDestroy
@@ -55,8 +55,9 @@ public class NovelService {
             // Map strings to DTOs
             for (Locator item : books.all()) {
                 String title = item.locator("h3").innerText();
+                String image = item.locator("img").getAttribute("src");
                 String id = item.locator("a.g_thumb").getAttribute("data-bookid");
-                NovelDto dto = new NovelDto(title,id);
+                NovelDto dto = new NovelDto(title,id,image);
                 results.add(dto);
             }
 

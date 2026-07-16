@@ -1,6 +1,8 @@
 package com.mediafetch.backend.media.controller;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,17 +46,20 @@ public class MediaController {
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody AddDto request){
-        mediaListService.mediaAdd(request);
+    public void add(@RequestBody AddDto request, @AuthenticationPrincipal UserDetails currentUser){
+        String username = currentUser.getUsername();
+        mediaListService.mediaAdd(request,username);
     }
 
     @PostMapping("/remove")
-    public void remove(@RequestBody RemoveDto request){
-        mediaListService.mediaRemove(request);
+    public void remove(@RequestBody RemoveDto request, @AuthenticationPrincipal UserDetails currentUser){
+        String username = currentUser.getUsername();
+        mediaListService.mediaRemove(request,username);
     }
 
     @GetMapping("/mylist")
-    public List<UserMediaDto> mylist(){
-        return mediaListService.mediaList();
+    public List<UserMediaDto> mylist( @AuthenticationPrincipal UserDetails currentUser){
+        String username = currentUser.getUsername();
+        return mediaListService.mediaList(username);
     }
 }

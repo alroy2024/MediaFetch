@@ -1,5 +1,6 @@
 package com.mediafetch.backend.auth.model;
 
+import com.mediafetch.backend.media.model.Media;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Media> savedMedias;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

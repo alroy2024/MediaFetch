@@ -3,6 +3,9 @@ package com.mediafetch.backend.media.service;
 import org.springframework.stereotype.Service;
 
 import com.mediafetch.backend.media.model.Media;
+import com.mediafetch.backend.auth.model.User;
+
+import com.mediafetch.backend.auth.repository.UserRepository;
 import com.mediafetch.backend.media.dto.AddDto;
 import com.mediafetch.backend.media.dto.RemoveDto;
 import com.mediafetch.backend.media.dto.UserMediaDto;
@@ -18,9 +21,12 @@ import java.util.Objects;
 public class MediaListService {
 
     private final MediaRepository mediaRepository;
+    private final UserRepository userRepository;
 
-    public List<UserMediaDto> mediaList(){
-        return mediaRepository.findAll().stream()
+    public List<UserMediaDto> mediaList(String username){
+         User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return mediaRepository.findByuserId(user.getId()).stream()
         .map(media -> new UserMediaDto(
             media.getId(),
             media.getTitle(),
@@ -28,20 +34,26 @@ public class MediaListService {
         )).toList();
     }
 
-    public void mediaAdd(AddDto request) {
+    public void mediaAdd(AddDto request,String username) {
         Integer id = Integer.parseInt(request.id());
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
         if (mediaRepository.findById(id).isPresent()) {
             throw new IllegalArgumentException("Media Already Added");
         }
         String title = Objects.requireNonNullElse(request.english(), request.romaji());
-        Media media = new Media(id, title, request.image());
+        Media media = new Media(id,user,title, request.image());
         mediaRepository.save(media);
     }
 
-    public void mediaRemove(RemoveDto request){
+    public void mediaRemove(RemoveDto request,String username){
         Integer id = Integer.parseInt(request.id());
-        if (!mediaRepository.findById(id).isPresent()) {
-            throw new IllegalArgumentException("Media Already Deleted");
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Media media = mediaRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Media not found or already deleted"));
+        if (!media.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Unauthorized: You do not have permission to delete this media");
         }
         mediaRepository.deleteById(id);
     }

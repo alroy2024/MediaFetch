@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import  useAddToList  from '../hooks/useAddToList';
+// import  useAddToList  from '../hooks/useAddToList';
 
 
 interface SearchBarProps {
@@ -8,14 +8,9 @@ interface SearchBarProps {
 }
 
 interface Search {
-  id: number,
-  title: {
-    english: string,
-    romaji: string
-  }
-  coverImage: {
-    large: string
-  }
+  Title: string,
+  Id: number,
+  Image: string
 }
 
 export default function SearchBar({ onClose, token }: SearchBarProps) {
@@ -40,7 +35,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
     const searchRequest = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/search", {
+        const response = await fetch("http://localhost:8080/searchNovel", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -54,7 +49,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
         const data = await response.json();
         console.log(data)
         if (data) {
-          setResults(data.data.Page.media);
+          setResults(data);
         }
 
       } catch (error) {
@@ -111,20 +106,22 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
               Searching for: <span className="text-zinc-300 font-mono font-medium">{searchQuery}</span>
             </div>
           )}
+          
           {isLoading ? (
             <div className="text-center py-8 text-zinc-400">Loading results...</div>
-          ) : results.length > 0 ? (
+          ) 
+          : results.length > 0 ? (
             <div className="flex flex-col gap-2 h-96 overflow-y-auto scrollbar-hide ">
-              {results.map((anime) => (
-                <div key={anime.id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
-                  <img src={anime.coverImage.large} alt={anime.title.english} className="w-12 h-16 object-cover rounded" />
+              {results.map((novel) => (
+                <div key={novel.Id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
+                  <img src={novel.Image} alt={novel.Title} referrerPolicy="no-referrer"  className="w-12 h-16 object-cover rounded" />
                   <div>
-                    <h4 className="text-sm font-medium text-gray-200">{anime.title.english || anime.title.romaji}</h4>
-                  </div>
+                    <h4 className="text-sm font-medium text-gray-200">{novel.Title}</h4>
+                  </div> 
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); 
-                      useAddToList(anime.id,anime.title.english,anime.title.romaji,anime.coverImage.large,token);
+                    //   useAddToList(anime.id,anime.title.english,anime.title.romaji,anime.coverImage.large,token);
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >
