@@ -1,6 +1,7 @@
 import AnimeList from "./AnimeList"
 import SeriesList from "./SeriesList"
-import MyList from "./MyList"
+import MediaList from "./MediaList"
+import NovelList from "./NovelList"
 import MangaList from "./MangaList"
 
 interface Mediaprops {
@@ -12,7 +13,7 @@ function Anime(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MyList token={props.token} />
+                    <MediaList token={props.token} />
                 </div>
                 <div>
                     <AnimeList token={props.token} />
@@ -25,7 +26,7 @@ function Manga(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MyList token={props.token} />
+                    <MediaList token={props.token} />
                 </div>
                 <div>
                     <MangaList token={props.token} />
@@ -38,7 +39,7 @@ function Novel(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MyList token={props.token} />
+                    <NovelList token={props.token} />
                 </div>
                 <div>
                     Trending Variable

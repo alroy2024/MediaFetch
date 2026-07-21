@@ -6,7 +6,7 @@ interface Mediaprops {
   token: string;
 }
 
-interface Anime {
+interface Media {
   id: number;
   title: string;
   image: string;
@@ -15,13 +15,13 @@ interface Anime {
 const MyList = ({token}: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState({ start: 0, end: 12 });
-  const [myList, setmyList] = useState<Anime[] | null>(null);
+  const [myList, setmyList] = useState<Media[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleRemove = useRemoveFromList(); 
 
   useEffect(() => {
-    async function getAnimeList() {
+    async function getMediaList() {
       try {
         const response = await fetch("http://localhost:8080/mylist", {
           method: "GET",
@@ -33,12 +33,12 @@ const MyList = ({token}: Mediaprops) => {
         const data = await response.json();
         setmyList(data);
       } catch (error) {
-        console.error("Error fetching Anime list:", error);
+        console.error("Error fetching Media list:", error);
       } finally {
         setIsLoading(false);
       }
     }
-    getAnimeList();
+    getMediaList();
   }, [token,isOpen]);
 
   const mediaItems = myList || [];
@@ -116,21 +116,21 @@ const MyList = ({token}: Mediaprops) => {
       {isLoading ? (
         <p className="text-gray-400 py-10 text-center">Loading list items...</p>
       ) : totalMedia === 0 ? (
-        <p className="text-gray-400 py-10 text-center">No anime added yet.</p>
+        <p className="text-gray-400 py-10 text-center">No media added yet.</p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-8">
-          {mediaItems.slice(page.start, page.end).map((anime) => (
-            <div key={anime.id} className="flex flex-col gap-2 group cursor-pointer">
+          {mediaItems.slice(page.start, page.end).map((media) => (
+            <div key={media.id} className="flex flex-col gap-2 group cursor-pointer">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
-              onClick={() => handleRemove(anime.id,token)}>
+              onClick={() => handleRemove(media.id,token)}>
                 <img
-                  src={anime.image}
-                  alt={anime.title}
+                  src={media.image}
+                  alt={media.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
                 />
               </div>
               <p className="font-medium text-sm text-gray-200 line-clamp-2 text-left pr-2">
-                  {anime.title}
+                  {media.title}
               </p>
             </div>
           ))}

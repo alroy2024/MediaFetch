@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-// import  useAddToList  from '../hooks/useAddToList';
+import  useAddNovel  from '../hooks/useAddNovel';
 
 
 interface SearchBarProps {
@@ -8,9 +8,9 @@ interface SearchBarProps {
 }
 
 interface Search {
-  Title: string,
-  Id: number,
-  Image: string
+  title: string,
+  id: number,
+  image: string
 }
 
 export default function SearchBar({ onClose, token }: SearchBarProps) {
@@ -35,7 +35,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
     const searchRequest = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/searchNovel", {
+        const response = await fetch("http://localhost:8080/novels/searchNovel", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,15 +113,15 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
           : results.length > 0 ? (
             <div className="flex flex-col gap-2 h-96 overflow-y-auto scrollbar-hide ">
               {results.map((novel) => (
-                <div key={novel.Id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
-                  <img src={novel.Image} alt={novel.Title} referrerPolicy="no-referrer"  className="w-12 h-16 object-cover rounded" />
+                <div key={novel.id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
+                  <img src={novel.image} alt={novel.title} referrerPolicy="no-referrer"  className="w-12 h-16 object-cover rounded" />
                   <div>
-                    <h4 className="text-sm font-medium text-gray-200">{novel.Title}</h4>
+                    <h4 className="text-sm font-medium text-gray-200">{novel.title}</h4>
                   </div> 
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); 
-                    //   useAddToList(anime.id,anime.title.english,anime.title.romaji,anime.coverImage.large,token);
+                      useAddNovel(novel.id,novel.title,novel.image,token);
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >

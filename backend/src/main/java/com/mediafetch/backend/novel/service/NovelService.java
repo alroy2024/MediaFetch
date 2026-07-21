@@ -1,72 +1,30 @@
 package com.mediafetch.backend.novel.service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.mediafetch.backend.novel.dto.NovelDto;
-import com.mediafetch.backend.novel.dto.RequestDto;
-import com.microsoft.playwright.*;
-
+import com.mediafetch.backend.novel.model.Novel;
+import com.mediafetch.backend.novel.repository.NovelRepository;
+import lombok.RequiredArgsConstructor;
+import java.util.List;
 @Service
+@RequiredArgsConstructor
+
 public class NovelService {
 
-    private static final Logger logger = LoggerFactory.getLogger(NovelService.class);
+    private final NovelRepository novelRepository;
 
-    private Playwright playwright;
-    private Browser browser;
-
-    @PostConstruct
-    public void init() {
-        logger.info("Initializing Playwright and launching browser...");
-        playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+    public void novelAdd(NovelDto novelDto){
+        Novel novel = new Novel(novelDto.id(),novelDto.title(),novelDto.image());
+        novelRepository.save(novel);
     }
 
-    @PreDestroy
-    public void close() {
-        logger.info("Closing Playwright browser...");
-        if (browser != null) browser.close();
-        if (playwright != null) playwright.close();
-    }
-
-    public List<NovelDto> getNames(RequestDto requestDto) {
-        String query = requestDto.searchQuery();
-        List<NovelDto> results = new ArrayList<>();
-
-        try (BrowserContext context = browser.newContext();
-            Page page = context.newPage()) {
-
-            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            page.navigate("https://www.webnovel.com/search?keywords=" + encodedQuery);
-
-            page.waitForSelector("ul.j_result_wrap");
-            Locator books = page.locator("ul.j_result_wrap li:has(a.g_thumb)");
-
-
-            // Map strings to DTOs
-            for (Locator item : books.all()) {
-                String title = item.locator("h3").innerText();
-                String image = item.locator("img").getAttribute("src");
-                String id = item.locator("a.g_thumb").getAttribute("data-bookid");
-                NovelDto dto = new NovelDto(title,id,image);
-                results.add(dto);
-            }
-
-        } catch (PlaywrightException e) {
-            logger.error("Playwright failed to scrape titles for query: {}", query, e);
-        } catch (Exception e) {
-            logger.error("An unexpected error occurred during scraping", e);
-        }
-        
-        return results;
+    public List<NovelDto> novelFetch(){
+        return novelRepository.findAll().stream().map(
+            novel -> new NovelDto(
+                novel.getId(),
+                novel.getTitle(),
+                novel.getImage()
+            )).toList();
     }
 }
