@@ -26,7 +26,7 @@ public class MediaListService {
     public List<UserMediaDto> mediaList(String username){
          User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return mediaRepository.findByuserId(user.getId()).stream()
+        return mediaRepository.findByUserId(user.getId()).stream()
         .map(media -> new UserMediaDto(
             media.getId(),
             media.getTitle(),
@@ -38,7 +38,7 @@ public class MediaListService {
         Integer id = Integer.parseInt(request.id());
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (mediaRepository.findById(id).isPresent()) {
+        if (mediaRepository.existsByUserAndId(user,id)) {
             throw new IllegalArgumentException("Media Already Added");
         }
         String title = Objects.requireNonNullElse(request.english(), request.romaji());

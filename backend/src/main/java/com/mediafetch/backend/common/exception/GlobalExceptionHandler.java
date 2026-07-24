@@ -1,4 +1,4 @@
-package com.mediafetch.backend.auth.config;
+package com.mediafetch.backend.common.exception;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +13,7 @@ import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIllegalArgumentException(IllegalArgumentException ex) {
