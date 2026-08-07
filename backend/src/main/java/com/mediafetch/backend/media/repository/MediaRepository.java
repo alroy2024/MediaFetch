@@ -1,7 +1,16 @@
 package com.mediafetch.backend.media.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.mediafetch.backend.media.model.Media;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-public interface MediaRepository extends JpaRepository<Media,Integer>{
+import com.mediafetch.backend.media.model.Media;
+import java.util.List;
+public interface MediaRepository extends JpaRepository<Media,Integer>{ 
+    @Query("SELECT m FROM User u JOIN u.medias m WHERE u.id = :userId")
+    List<Media> findMediasByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(u) > 0 FROM User u JOIN u.medias m WHERE u.id = :userID AND m.id = :mediaId")
+    Boolean hasMedia(@Param("userID") Long userId,@Param("mediaId") Integer mediaId);
 }
+
