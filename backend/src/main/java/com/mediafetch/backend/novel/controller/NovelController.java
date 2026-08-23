@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.mediafetch.backend.novel.dto.RequestDto;
 import com.mediafetch.backend.novel.dto.NovelDto;
@@ -24,13 +26,14 @@ public class NovelController {
     final private NovelService novelService;
 
     @GetMapping
-    public List<NovelDto> novelList() {
-        return novelService.novelFetch();
+    public List<NovelDto> novelList(@AuthenticationPrincipal UserDetails currentUser) {
+        return novelService.novelFetch(currentUser.getUsername());
     }
 
     @PostMapping
-    public void novelAdd(@RequestBody NovelDto novelDto) {
-        novelService.novelAdd(novelDto);
+    public void novelAdd(@RequestBody NovelDto novelDto,
+                         @AuthenticationPrincipal UserDetails currentUser) {
+        novelService.novelAdd(novelDto, currentUser.getUsername());
     }
 
     @PostMapping("searchNovel")

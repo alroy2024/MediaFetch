@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.mediafetch.backend.novel.model.Novel;
 
-public interface NovelRepository extends JpaRepository<Novel,Integer>{
+public interface NovelRepository extends JpaRepository<Novel, Long>{
 
 }

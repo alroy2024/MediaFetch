@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import NovelSearchBar from "./NovelSearchBar"
-import  useRemoveFromList  from '../hooks/useRemoveFromList';
 
 interface Mediaprops {
   token: string;
@@ -17,8 +16,6 @@ const MyList = ({token}: Mediaprops) => {
   const [page, setPage] = useState({ start: 0, end: 12 });
   const [myList, setmyList] = useState<Media[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const handleRemove = useRemoveFromList(); 
 
   useEffect(() => {
     async function getMediaList() {
@@ -122,7 +119,7 @@ const MyList = ({token}: Mediaprops) => {
           {mediaItems.slice(page.start, page.end).map((media) => (
             <div key={media.id} className="flex flex-col gap-2 group cursor-pointer">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
-              onClick={() => handleRemove(media.id,token)}>
+              >
                 <img
                   src={media.image}
                   alt={media.title}
