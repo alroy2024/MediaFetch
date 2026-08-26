@@ -29,8 +29,8 @@ function Login() {
     }
     return (
         <>
-            <div className=" flex items-center justify-center">
-                <div className="bg-white p-4 rounded-2xl shadow-xl w-96 border border-slate-200">
+            <div className="flex items-center justify-center text-slate-900">
+                <div className="bg-white p-4 rounded-2xl shadow-xl w-96 border border-slate-200 text-slate-900">
                     <form onSubmit={handleSubmit}>
                         <h1 className="text-2xl font-bold text-center text-slate-800 mb-8">
                             {login ? 'Login' : 'Sign Up'}
