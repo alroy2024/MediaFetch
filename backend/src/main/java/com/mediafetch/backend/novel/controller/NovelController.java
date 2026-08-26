@@ -41,4 +41,8 @@ public class NovelController {
         return novelFetchService.getName(requestDto);
     }
 
+    @GetMapping("topNovel")
+    public List<NovelDto> topNovel(){
+        return novelFetchService.getTopNovelDtos();
+    }
 }

@@ -27,7 +27,7 @@ type Manga = {
 }
 
 
-export default function Manga(props: Mediaprops) {
+export default function MangaList(props: Mediaprops) {
     const [mangaList, setMangaList] = useState<MangaList | null>(null);
 
     useEffect(() => {
@@ -40,6 +40,9 @@ export default function Manga(props: Mediaprops) {
                         'Content-Type': 'application/json'
                     }
                 });
+                if (!response.ok) {
+                    throw new Error(`Manga request failed: ${response.status}`);
+                }
                 const data = await response.json();
                 setMangaList(data);
             } catch (error) {
@@ -47,7 +50,7 @@ export default function Manga(props: Mediaprops) {
             }
         }
         getMangaList();
-    }, []);
+    }, [props.token]);
 
     if (!mangaList) {
         return (
@@ -60,10 +63,11 @@ export default function Manga(props: Mediaprops) {
     }
 
     return (
-        <>
-                <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
+        <div className="w-full max-w-6xl space-y-8 p-6">
+            <div className="w-full max-w-6xl h-90">
+            <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
 
-                <div className='flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory scroll-smooth '>
+            <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {mangaList.data.releasing.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
@@ -72,19 +76,21 @@ export default function Manga(props: Mediaprops) {
                             <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
-                                    alt={manga.title.english ?? manga.title.romaji}
-                                    className='w-full h-full object-content'
+                                    alt={manga.title.english || manga.title.romaji}
+                                    className='w-full h-full object-cover'
                                 />
                             </div>
                             <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
-                                {manga.title.english ?? manga.title.romaji}
+                                {manga.title.english || manga.title.romaji}
                             </p>
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className="w-full max-w-6xl h-90">
                 <h2 className="text-xl font-bold mb-4">Finished Manga</h2>
 
-                <div className='flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {mangaList.data.finished.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
@@ -93,16 +99,17 @@ export default function Manga(props: Mediaprops) {
                             <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
-                                    alt={manga.title.english ?? manga.title.romaji}
-                                    className='w-full h-full object-content'
+                                    alt={manga.title.english || manga.title.romaji}
+                                    className='w-full h-full object-cover'
                                 />
                             </div>
                                 <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
-                                    {manga.title.english ?? manga.title.romaji}
+                                    {manga.title.english || manga.title.romaji}
                                 </p>
                         </div>
                     ))}
                 </div>
-        </>
+            </div>
+        </div>
     );
 }

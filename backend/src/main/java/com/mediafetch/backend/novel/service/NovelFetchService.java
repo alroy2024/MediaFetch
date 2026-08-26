@@ -69,4 +69,38 @@ public class NovelFetchService {
         
         return results;
     }
+
+    public List<NovelDto> getTopNovelDtos() {
+        List<NovelDto> results = new ArrayList<>();
+
+        try (BrowserContext context = browser.newContext();
+            Page page = context.newPage()) {
+
+            page.navigate("https://www.webnovel.com/stories");
+            page.waitForSelector("ul.clearfix");
+            page.evaluate("window.scrollBy(0, window.innerHeight)");
+
+            Locator books = page.locator("ul.clearfix li:has(a.g_thumb)");
+
+
+            // Map strings to DTOs
+            for (Locator item : books.all()) {
+                Long id = Long.parseLong(item.locator("a.j_add_to_library").getAttribute("data-bookid"));     
+                String title = item.locator("a.c_l").innerText();
+                String image = item.locator("img").getAttribute("src");
+                NovelDto dto = new NovelDto(id,title,image);
+                results.add(dto);
+                if (results.size() > 19){
+                    break;  
+                }
+            }
+
+        } catch (PlaywrightException e) {
+            logger.error("Playwright failed to scrape titles for query: {}", e);
+        } catch (Exception e) {
+            logger.error("An unexpected error occurred during scraping", e);
+        }
+        
+        return results;
+    }
 }
