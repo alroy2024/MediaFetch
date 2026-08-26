@@ -61,10 +61,9 @@ export default function Manga(props: Mediaprops) {
 
     return (
         <>
-            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
 
-                <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                <div className='flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory scroll-smooth '>
                     {mangaList.data.releasing.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
@@ -77,17 +76,15 @@ export default function Manga(props: Mediaprops) {
                                     className='w-full h-full object-content'
                                 />
                             </div>
-                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
+                            <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
                                 {manga.title.english ?? manga.title.romaji}
                             </p>
                         </div>
                     ))}
                 </div>
-            </div>
-            <div className="w-full max-w-6xl p-6 h-90">
                 <h2 className="text-xl font-bold mb-4">Finished Manga</h2>
 
-                <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
+                <div className='flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {mangaList.data.finished.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
@@ -100,14 +97,12 @@ export default function Manga(props: Mediaprops) {
                                     className='w-full h-full object-content'
                                 />
                             </div>
-                            <p className='font-medium text-sm line-clamp-2 overflow-hidden flex items-center justify-center'>
-                                {manga.title.english ?? manga.title.romaji}
-                            </p>
+                                <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
+                                    {manga.title.english ?? manga.title.romaji}
+                                </p>
                         </div>
                     ))}
                 </div>
-            </div>
-
         </>
     );
 }

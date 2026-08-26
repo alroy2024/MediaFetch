@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Anime, Manga, Novel, Series } from "../components/Mulcomponents";
+import { Anime, Manga, Novel} from "../components/Mulcomponents";
 import { useValidToken } from '../hooks/useValidToken';
 
-const tabs = ["Novel", "Anime", "Manga", "Series"] as const;
+const tabs = ["Novel", "Anime", "Manga"] as const;
 
 function Home() {
     const [select, setSelected] = useState<(typeof tabs)[number]>("Novel");
@@ -78,7 +78,6 @@ function Home() {
                                     {select === "Anime" && <Anime token={token} />}
                                     {select === "Manga" && <Manga token={token} />}
                                     {select === "Novel" && <Novel token={token} />}
-                                    {select === "Series" && <Series token={token} />}
                                 </div>
                             ) : (
                                 <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 text-slate-400">
