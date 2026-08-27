@@ -16,7 +16,7 @@ const NovelList = ({token}: Mediaprops) => {
   useEffect(() => {
     async function getNovelList() {
       try {
-        const response = await fetch("http://localhost:8080/novels/topNovel", {
+        const response = await fetch("http://localhost:8080/novels", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

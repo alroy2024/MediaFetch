@@ -1,5 +1,5 @@
 export default async function useAddNovel(id: number, title: string, image: string, token: string) {
-    await fetch('http://localhost:8080/novels',
+    await fetch('http://localhost:8080/novels/add',
         {
             method: 'POST',
             headers: {

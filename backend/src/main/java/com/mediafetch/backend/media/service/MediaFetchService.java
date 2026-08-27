@@ -1,6 +1,7 @@
 package com.mediafetch.backend.media.service;
 
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.cache.annotation.Cacheable;
 
 import com.mediafetch.backend.media.dto.GraphQlRequest;
 import com.mediafetch.backend.media.dto.MediaList;
@@ -44,7 +45,7 @@ public class MediaFetchService{
         }
     }
 """;
-
+    @Cacheable(value = "media", key = "#type")
     public MediaList fetchMedia(String type) {
         Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "type", type);
         return webClient.post()

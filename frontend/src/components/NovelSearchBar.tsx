@@ -35,8 +35,8 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
     const searchRequest = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/novels/searchNovel", {
-          method: "GET",
+        const response = await fetch("http://localhost:8080/novels", {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

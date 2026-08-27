@@ -8,6 +8,8 @@ import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
+import org.springframework.cache.annotation.Cacheable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -70,6 +72,7 @@ public class NovelFetchService {
         return results;
     }
 
+    @Cacheable("Novel")
     public List<NovelDto> getTopNovelDtos() {
         List<NovelDto> results = new ArrayList<>();
 
@@ -79,6 +82,7 @@ public class NovelFetchService {
             page.navigate("https://www.webnovel.com/stories");
             page.waitForSelector("ul.clearfix");
             page.evaluate("window.scrollBy(0, window.innerHeight)");
+            page.waitForTimeout(1500);
 
             Locator books = page.locator("ul.clearfix li:has(a.g_thumb)");
 

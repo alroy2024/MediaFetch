@@ -27,7 +27,7 @@ const MyList = ({token, listType}: Mediaprops) => {
     async function getMediaList() {
       try {
         const response = await fetch(
-          isNovelList ? "http://localhost:8080/novels" : "http://localhost:8080/mylist",
+          isNovelList ? "http://localhost:8080/novels/mylist" : "http://localhost:8080/mylist",
           {
           method: "GET",
           headers: {
