@@ -6,6 +6,7 @@ import  useRemoveFromList  from '../hooks/useRemoveFromList';
 interface Mediaprops {
   token: string;
   listType: "media" | "novel";
+  mediaType?: "ANIME" | "MANGA";
 }
 
 interface Media {
@@ -14,7 +15,7 @@ interface Media {
   image: string;
 };
 
-const MyList = ({token, listType}: Mediaprops) => {
+const MyList = ({token, listType, mediaType}: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState({ start: 0, end: 12 });
   const [myList, setmyList] = useState<Media[] | null>(null);
@@ -27,7 +28,9 @@ const MyList = ({token, listType}: Mediaprops) => {
     async function getMediaList() {
       try {
         const response = await fetch(
-          isNovelList ? "http://localhost:8080/novels/mylist" : "http://localhost:8080/mylist",
+          isNovelList
+            ? "http://localhost:8080/novels/mylist"
+            : `http://localhost:8080/mylist?type=${mediaType}`,
           {
           method: "GET",
           headers: {
@@ -48,7 +51,7 @@ const MyList = ({token, listType}: Mediaprops) => {
       }
     }
     getMediaList();
-  }, [token, isOpen, isNovelList]);
+  }, [token, isOpen, isNovelList, mediaType]);
 
   const mediaItems = myList || [];
   const totalMedia = mediaItems.length;
@@ -123,7 +126,7 @@ const MyList = ({token, listType}: Mediaprops) => {
       {isOpen && (isNovelList ? (
         <NovelSearchBar onClose={() => setIsOpen(false)} token={token} />
       ) : (
-        <SearchBar onClose={() => setIsOpen(false)} token={token} />
+        <SearchBar onClose={() => setIsOpen(false)} token={token} mediaType={mediaType!} />
       ))}
 
       {isLoading ? (

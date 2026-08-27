@@ -5,6 +5,7 @@ import  useAddToList  from '../hooks/useAddToList';
 interface SearchBarProps {
   onClose: () => void;
   token: string;
+  mediaType: "ANIME" | "MANGA";
 }
 
 interface Search {
@@ -18,7 +19,7 @@ interface Search {
   }
 }
 
-export default function SearchBar({ onClose, token }: SearchBarProps) {
+export default function SearchBar({ onClose, token, mediaType }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<Search[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +49,8 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
 
           },
           body: JSON.stringify({
-            searchQuery: searchQuery
+            searchQuery: searchQuery,
+            type: mediaType,
           })
         });
         const data = await response.json();
@@ -64,7 +66,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
       }
     }, 600);
     return () => clearTimeout(searchRequest);
-  }, [searchQuery, token]);
+  }, [searchQuery, token, mediaType]);
 
 
   return (
@@ -77,7 +79,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <h3 className="text-lg font-medium text-gray-200">Search Anime</h3>
+          <h3 className="text-lg font-medium text-gray-200">Search {mediaType === "ANIME" ? "Anime" : "Manga"}</h3>
         </div>
 
         <div className="relative">
@@ -100,7 +102,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Type anime title..."
+            placeholder={`Type ${mediaType === "ANIME" ? "anime" : "manga"} title...`}
             className="w-full bg-zinc-950 border border-zinc-800 rounded-lg pl-12 pr-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600 transition-all text-base"
           />
         </div>
@@ -115,16 +117,16 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
             <div className="text-center py-8 text-zinc-400">Loading results...</div>
           ) : results.length > 0 ? (
             <div className="flex flex-col gap-2 h-96 overflow-y-auto scrollbar-hide ">
-              {results.map((anime) => (
-                <div key={anime.id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
-                  <img src={anime.coverImage.large} alt={anime.title.english} className="w-12 h-16 object-cover rounded" />
+              {results.map((media) => (
+                <div key={media.id} className="flex items-center gap-3 p-2 hover:bg-zinc-800/50 rounded-lg transition-colors cursor-pointer">
+                  <img src={media.coverImage.large} alt={media.title.english} className="w-12 h-16 object-cover rounded" />
                   <div>
-                    <h4 className="text-sm font-medium text-gray-200">{anime.title.english || anime.title.romaji}</h4>
+                    <h4 className="text-sm font-medium text-gray-200">{media.title.english || media.title.romaji}</h4>
                   </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); 
-                      useAddToList(anime.id,anime.title.english,anime.title.romaji,anime.coverImage.large,token);
+                      useAddToList(media.id, media.title.english, media.title.romaji, media.coverImage.large, token, mediaType);
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >

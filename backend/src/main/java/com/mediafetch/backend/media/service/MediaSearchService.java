@@ -35,7 +35,11 @@ public class MediaSearchService {
             """;
 
     public MediaSearchDto mediaSearch(RequestDto request) {
-        Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "title", request.searchQuery(),"type", "ANIME");
+        String type = request.type();
+        if (!"ANIME".equals(type) && !"MANGA".equals(type)) {
+            throw new IllegalArgumentException("Media type must be ANIME or MANGA");
+        }
+        Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "title", request.searchQuery(), "type", type);
         return webClient.post()
         .bodyValue(new GraphQlRequest(query, variables))
         .retrieve()

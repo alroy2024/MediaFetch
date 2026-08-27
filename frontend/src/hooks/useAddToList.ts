@@ -1,4 +1,11 @@
-export default async function useAddtoList(id: number, english: string, romaji: string, image: string, token: string) {
+export default async function useAddtoList(
+    id: number,
+    english: string,
+    romaji: string,
+    image: string,
+    token: string,
+    type: "ANIME" | "MANGA",
+) {
     await fetch('http://localhost:8080/add',
         {
             method: 'POST',
@@ -10,7 +17,8 @@ export default async function useAddtoList(id: number, english: string, romaji: 
                 id: id,
                 english: english,
                 romaji: romaji,
-                image: image
+                image: image,
+                type: type,
             })
         }
     )

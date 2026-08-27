@@ -12,7 +12,7 @@ function Anime(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MediaList token={props.token} listType="media" />
+                    <MediaList token={props.token} listType="media" mediaType="ANIME" />
                 </div>
                 <div>
                     <AnimeList token={props.token} />
@@ -25,7 +25,7 @@ function Manga(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MediaList token={props.token} listType="media" />
+                    <MediaList token={props.token} listType="media" mediaType="MANGA" />
                 </div>
                 <div>
                     <MangaList token={props.token} />

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Anime, Manga, Novel} from "../components/Mulcomponents";
+import { Anime, Manga, Novel } from "../components/Mulcomponents";
 import { useValidToken } from '../hooks/useValidToken';
 
-const tabs = ["Novel", "Anime", "Manga"] as const;
+const tabs = ["Manga", "Novel", "Anime"] as const;
 
 function Home() {
-    const [select, setSelected] = useState<(typeof tabs)[number]>("Novel");
+    const [select, setSelected] = useState<(typeof tabs)[number]>("Manga");
     const token = useValidToken();
 
     return (
@@ -31,7 +31,7 @@ function Home() {
                                     className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${select === tab
                                         ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-900/30"
                                         : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                                    }`}
+                                        }`}
                                 >
                                     {tab}
                                 </button>
@@ -65,7 +65,7 @@ function Home() {
                                             className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${select === tab
                                                 ? "bg-red-500 text-white"
                                                 : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-                                            }`}
+                                                }`}
                                         >
                                             {tab}
                                         </button>
@@ -75,9 +75,9 @@ function Home() {
 
                             {token ? (
                                 <div className="rounded-2xl border border-white/5 bg-slate-950/60 p-3">
-                                    {select === "Anime" && <Anime token={token} />}
                                     {select === "Manga" && <Manga token={token} />}
                                     {select === "Novel" && <Novel token={token} />}
+                                    {select === "Anime" && <Anime token={token} />}
                                 </div>
                             ) : (
                                 <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 text-slate-400">

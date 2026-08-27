@@ -23,10 +23,11 @@ public class MediaListService {
     private final MediaRepository mediaRepository;
     private final UserRepository userRepository;
 
-    public List<UserMediaDto> mediaList(String username) {
+    public List<UserMediaDto> mediaList(String username, String type) {
+        validateType(type);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return mediaRepository.findMediasByUserId(user.getId()).stream()                
+        return mediaRepository.findMediasByUserIdAndType(user.getId(), type).stream()
         .map(media -> new UserMediaDto(
                         media.getId(),
                         media.getTitle(),
@@ -46,7 +47,8 @@ public class MediaListService {
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
         // check request media already added by user
-        if (mediaRepository.hasMedia(user.getId(), mediaId)) {
+        validateType(request.type());
+        if (mediaRepository.hasMedia(user.getId(), mediaId, request.type())) {
         throw new IllegalArgumentException("Media Already Added to your list");
         }
         // see if request media present in media table or else create it
@@ -56,6 +58,7 @@ public class MediaListService {
         newMedia.setId(mediaId);
         newMedia.setImage(request.image());
         newMedia.setTitle(title);
+        newMedia.setType(request.type());
         return mediaRepository.save(newMedia);
         });
         // add media to user medias and save user
@@ -74,5 +77,11 @@ public class MediaListService {
         // to delete this media");
         // }
         mediaRepository.deleteById(id);
+    }
+
+    private void validateType(String type) {
+        if (!"ANIME".equals(type) && !"MANGA".equals(type)) {
+            throw new IllegalArgumentException("Media type must be ANIME or MANGA");
+        }
     }
 }

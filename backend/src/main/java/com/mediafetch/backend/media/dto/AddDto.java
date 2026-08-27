@@ -4,6 +4,7 @@ public record AddDto(
     String id,
     String english,
     String romaji,
-    String image
+    String image,
+    String type
 ) {
 }
