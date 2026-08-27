@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar"
+import NovelSearchBar from "./NovelSearchBar"
 import  useRemoveFromList  from '../hooks/useRemoveFromList';
 
 interface Mediaprops {
   token: string;
+  listType: "media" | "novel";
 }
 
 interface Media {
@@ -12,24 +14,31 @@ interface Media {
   image: string;
 };
 
-const MyList = ({token}: Mediaprops) => {
+const MyList = ({token, listType}: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState({ start: 0, end: 12 });
   const [myList, setmyList] = useState<Media[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleRemove = useRemoveFromList(); 
+  const isNovelList = listType === "novel";
 
   useEffect(() => {
     async function getMediaList() {
       try {
-        const response = await fetch("http://localhost:8080/mylist", {
+        const response = await fetch(
+          isNovelList ? "http://localhost:8080/novels" : "http://localhost:8080/mylist",
+          {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        });
+          },
+        );
+        if (!response.ok) {
+          throw new Error(`List request failed: ${response.status}`);
+        }
         const data = await response.json();
         setmyList(data);
       } catch (error) {
@@ -39,7 +48,7 @@ const MyList = ({token}: Mediaprops) => {
       }
     }
     getMediaList();
-  }, [token,isOpen]);
+  }, [token, isOpen, isNovelList]);
 
   const mediaItems = myList || [];
   const totalMedia = mediaItems.length;
@@ -111,7 +120,11 @@ const MyList = ({token}: Mediaprops) => {
         </div>
       </div>
 
-      {isOpen && <SearchBar onClose={() => setIsOpen(false)} token={token} />}
+      {isOpen && (isNovelList ? (
+        <NovelSearchBar onClose={() => setIsOpen(false)} token={token} />
+      ) : (
+        <SearchBar onClose={() => setIsOpen(false)} token={token} />
+      ))}
 
       {isLoading ? (
         <p className="text-gray-400 py-10 text-center">Loading list items...</p>
@@ -121,8 +134,10 @@ const MyList = ({token}: Mediaprops) => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-8">
           {mediaItems.slice(page.start, page.end).map((media) => (
             <div key={media.id} className="flex flex-col gap-2 group cursor-pointer">
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
-              onClick={() => handleRemove(media.id,token)}>
+              <div
+                className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
+                onClick={() => !isNovelList && handleRemove(media.id, token)}
+              >
                 <img
                   src={media.image}
                   alt={media.title}

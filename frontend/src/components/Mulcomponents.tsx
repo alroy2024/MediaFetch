@@ -12,7 +12,7 @@ function Anime(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MediaList token={props.token} />
+                    <MediaList token={props.token} listType="media" />
                 </div>
                 <div>
                     <AnimeList token={props.token} />
@@ -25,7 +25,7 @@ function Manga(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <MediaList token={props.token} />
+                    <MediaList token={props.token} listType="media" />
                 </div>
                 <div>
                     <MangaList token={props.token} />
@@ -38,10 +38,10 @@ function Novel(props: Mediaprops) {
         <>
             <div>
                 <div>
-                    <NovelList token={props.token} />
+                    <MediaList token={props.token} listType="novel" />
                 </div>
                 <div>
-                    Trending Variable
+                    <NovelList token={props.token} />
                 </div>
             </div>
         </>)
