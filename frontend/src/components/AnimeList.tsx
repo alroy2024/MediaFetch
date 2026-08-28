@@ -63,14 +63,14 @@ export default function AnimeList(props: Mediaprops) {
     }
     return (
         <div className="w-full max-w-6xl space-y-8 p-6">
-            <div className="w-full h-90">
+            <div className="w-full h-72">
                 <h2 className="text-xl font-bold mb-4">Airing Anime</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {animeList.data.releasing.media.map((anime: Anime) => (
                         <div
                             key={anime.id}
-                            className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                            className='flex flex-col items-center text-center w-40 shrink-0 snap-start gap-2'
                         >
                             <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
                                 <img
@@ -86,14 +86,14 @@ export default function AnimeList(props: Mediaprops) {
                     ))}
                 </div>
             </div>
-            <div className="w-full h-90">
+            <div className="w-full h-72">
                 <h2 className="text-xl font-bold mb-4">Upcoming Anime</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth '>
                     {animeList.data.finished.media.map((anime: Anime) => (
                         <div
                             key={anime.id}
-                            className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                            className='flex flex-col items-center text-center w-40 shrink-0 snap-start gap-2'
                         >
                             <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200 '>
                                 <img

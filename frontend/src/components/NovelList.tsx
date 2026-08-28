@@ -53,7 +53,7 @@ const NovelList = ({token}: Mediaprops) => {
 
       <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth">
         {novelList.map((novel) => (
-            <div key={novel.id} className="flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2">
+            <div key={novel.id} className="flex flex-col items-center text-center w-40 shrink-0 snap-start gap-2">
               <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200">
                 <img
                   src={novel.image}

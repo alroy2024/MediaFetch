@@ -64,20 +64,20 @@ export default function MangaList(props: Mediaprops) {
 
     return (
         <div className="w-full max-w-6xl space-y-8 p-6">
-            <div className="w-full max-w-6xl h-90">
+            <div className="w-full max-w-6xl h-72">
             <h2 className="text-xl font-bold mb-4">Ongoing Manga</h2>
 
             <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {mangaList.data.releasing.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
-                            className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                            className='flex flex-col items-center text-center w-40 shrink-0 snap-start gap-2'
                         >
-                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
+                                <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md bg-gray-800 hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
                                     alt={manga.title.english || manga.title.romaji}
-                                    className='w-full h-full object-cover'
+                                    className='w-full h-full object-fill'
                                 />
                             </div>
                             <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
@@ -87,20 +87,20 @@ export default function MangaList(props: Mediaprops) {
                     ))}
                 </div>
             </div>
-            <div className="w-full max-w-6xl h-90">
+            <div className="w-full max-w-6xl h-72">
                 <h2 className="text-xl font-bold mb-4">Finished Manga</h2>
 
                 <div className='flex overflow-x-auto gap-6 pb-4 scrollbar-hide snap-x snap-mandatory scroll-smooth'>
                     {mangaList.data.finished.media.map((manga: Manga) => (
                         <div
                             key={manga.id}
-                            className='flex flex-col items-center text-center w-48 shrink-0 snap-start gap-2'
+                            className='flex flex-col items-center text-center w-40 shrink-0 snap-start gap-2'
                         >
-                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md hover:scale-105 transition-transform duration-200'>
+                            <div className='relative w-full aspect-[3/4] overflow-hidden rounded-lg shadow-md bg-gray-800 hover:scale-105 transition-transform duration-200'>
                                 <img
                                     src={manga.coverImage.large}
                                     alt={manga.title.english || manga.title.romaji}
-                                    className='w-full h-full object-cover'
+                                    className='w-full h-full object-fill'
                                 />
                             </div>
                                 <p className='font-medium text-sm line-clamp-2 overflow-hidden text-center'>
