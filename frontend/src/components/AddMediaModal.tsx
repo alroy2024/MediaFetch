@@ -7,6 +7,7 @@ export interface AddMediaItem {
   id: number;
   title: string;
   image: string;
+  url?: string;
   summary?: string;
   token: string;
   mediaType: "ANIME" | "MANGA" | "NOVEL";
@@ -14,6 +15,8 @@ export interface AddMediaItem {
   romajiTitle?: string;
   progressLabel: "episode" | "chapter";
   totalProgress?: number | null;
+  isUpcoming?: boolean;
+  isOngoing?: boolean;
 }
 
 interface AddMediaModalProps {
@@ -44,9 +47,11 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           item.id,
           item.title,
           item.image,
+          item.url || "",
+          item.summary || "",
           item.token,
           progress,
-          item.totalProgress ?? 0,
+          item.isUpcoming ? 0 : item.totalProgress ?? 0,
         );
       } else {
         await useAddToList(
@@ -56,7 +61,7 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           item.image,
           item.token,
           item.mediaType,
-          progress,
+          item.isUpcoming ? 0 : progress,
           item.totalProgress ?? 0,
         );
       }
@@ -68,7 +73,6 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
     }
   };
 
-  const totalLabel = item.totalProgress == null ? "Unavailable" : item.totalProgress;
   const summary = item.summary?.replace(/<[^>]*>/g, "").trim();
 
   return createPortal(
@@ -114,17 +118,24 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
               type="number"
               min="0"
               max={item.totalProgress ?? undefined}
-              value={progress}
+              value={item.isUpcoming ? 0 : progress}
+              disabled={item.isUpcoming}
               onChange={(event) => setProgress(Math.max(0, Number(event.target.value)))}
               className="mt-2 w-full border-b border-zinc-600 bg-transparent py-2 text-2xl font-semibold text-white outline-none focus:border-red-400"
             />
           </label>
-          <div className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
-            <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              Current total {item.progressLabel}s
-            </span>
-            <strong className="mt-3 block text-2xl font-semibold text-white">{totalLabel}</strong>
-          </div>
+          {(item.mediaType === "ANIME" || item.mediaType === "MANGA") && (
+            <div className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                {item.mediaType === "ANIME" ? "Current total episodes" : "Chapter status"}
+              </span>
+              <strong className="mt-3 block text-2xl font-semibold text-white">
+                {item.isOngoing
+                  ? "Ongoing"
+                  : item.totalProgress == null ? "Unavailable" : item.totalProgress}
+              </strong>
+            </div>
+          )}
         </div>
 
         {error && <p className="mt-4 text-sm text-red-300">{error}</p>}

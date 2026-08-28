@@ -24,6 +24,11 @@ public class Novel {
     @Column(nullable = false)
     private String image;
 
+    private String url;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(nullable = false)
     private Integer currentChapter = 0;
 

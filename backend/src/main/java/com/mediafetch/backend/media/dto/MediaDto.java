@@ -6,12 +6,16 @@ public record MediaDto(
             CoverImage coverImage,
             String description,
             Integer episodes,
-            Integer chapters
+            Integer chapters,
+            String status,
+            NextAiringEpisode nextAiringEpisode
     ) {
 
         public record Title(String romaji, String english) {
         }
         public record CoverImage(String large) {
+        }
+        public record NextAiringEpisode(Integer episode) {
         }
     }
 

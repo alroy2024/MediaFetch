@@ -19,7 +19,11 @@ interface Search {
   },
   description?: string | null,
   episodes?: number | null,
-  chapters?: number | null
+  chapters?: number | null,
+  status?: string | null,
+  nextAiringEpisode?: {
+    episode: number;
+  } | null
 }
 
 export default function SearchBar({ onClose, token, mediaType }: SearchBarProps) {
@@ -141,7 +145,15 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
                         englishTitle: media.title.english,
                         romajiTitle: media.title.romaji,
                         progressLabel: mediaType === "ANIME" ? "episode" : "chapter",
-                        totalProgress: mediaType === "ANIME" ? media.episodes : media.chapters,
+                        totalProgress: mediaType === "ANIME"
+                          ? media.status === "NOT_YET_RELEASED"
+                            ? null
+                            : media.nextAiringEpisode
+                              ? Math.max(0, media.nextAiringEpisode.episode - 1)
+                              : media.episodes
+                          : media.chapters ?? 0,
+                        isUpcoming: mediaType === "ANIME" && media.status === "NOT_YET_RELEASED",
+                        isOngoing: mediaType === "MANGA" && media.status === "RELEASING",
                       });
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"

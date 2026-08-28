@@ -11,7 +11,8 @@ interface Search {
   title: string,
   id: number,
   image: string,
-  summary?: string
+  url: string,
+  description?: string
 }
 
 export default function SearchBar({ onClose, token }: SearchBarProps) {
@@ -128,7 +129,8 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
                         id: novel.id,
                         title: novel.title,
                         image: novel.image,
-                        summary: novel.summary,
+                        url: novel.url,
+                        summary: novel.description,
                         token,
                         mediaType: "NOVEL",
                         progressLabel: "chapter",

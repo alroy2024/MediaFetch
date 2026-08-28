@@ -32,6 +32,10 @@ public class MediaSearchService {
                     description(asHtml: false)
                     episodes
                     chapters
+                    status
+                    nextAiringEpisode {
+                    episode
+                    }
                 }
                 }
             }

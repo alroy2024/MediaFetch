@@ -2,6 +2,8 @@ export default async function useAddNovel(
     id: number,
     title: string,
     image: string,
+    url: string,
+    description: string,
     token: string,
     currentChapter: number,
     totalChapter: number,
@@ -17,6 +19,8 @@ export default async function useAddNovel(
                 id: id,
                 title: title,
                 image: image,
+                url: url,
+                description: description,
                 currentChapter: currentChapter,
                 totalChapter: totalChapter,
             })

@@ -17,19 +17,26 @@ public class NovelService {
 
     private final NovelRepository novelRepository;
     private final UserRepository userRepository;
+    private final NovelFetchService novelFetchService;
 
     @Transactional
     public void novelAdd(NovelDto novelDto, String username){
         User user = getUser(username);
-        Novel novel = novelRepository.findById(novelDto.id()).orElseGet(() ->
-            novelRepository.save(new Novel(
+        Novel novel = novelRepository.findById(novelDto.id()).orElseGet(() -> {
+            Novel newNovel = novelRepository.save(new Novel(
                 novelDto.id(),
                 novelDto.title(),
                 novelDto.image(),
+                novelDto.url(),
+                novelDto.description(),
                 Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter()),
                 Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter())
-            ))
-        );
+            ));
+            int latestChapter = novelFetchService.fetchCurrentChapter(newNovel.getUrl());
+            newNovel.setTotalChapter(latestChapter);
+            newNovel.setCurrentChapter(Math.min(newNovel.getCurrentChapter(), latestChapter));
+            return novelRepository.save(newNovel);
+        });
 
         if (!user.getNovels().add(novel)) {
             throw new IllegalArgumentException("Novel already added to your list");
@@ -43,6 +50,8 @@ public class NovelService {
                 novel.getId(),
                 novel.getTitle(),
                 novel.getImage(),
+                novel.getUrl(),
+                novel.getDescription(),
                 novel.getCurrentChapter(),
                 novel.getTotalChapter()
             )).toList();
