@@ -50,7 +50,7 @@ function Home() {
 
                 <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-7xl">
-                        <section className="rounded-[28px] border border-white/10 bg-slate-900/60 p-4 shadow-2xl backdrop-blur-sm md:p-5">
+                        <section className="rounded-[28px] border border-white/10 bg-slate-900/60 p-4 shadow-2xl backdrop-blur-[2px] md:p-5">
                             <div className="mb-5 flex flex-col gap-4 border-b border-white/10 pb-4 md:flex-row md:items-center md:justify-between">
                                 <div>
                                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-300">Library</p>

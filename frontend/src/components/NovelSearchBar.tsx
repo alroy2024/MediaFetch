@@ -67,7 +67,7 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
   return (
     <>
       {!selectedNovel && <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/70 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/70 backdrop-blur-[2px] animate-fade-in"
       onClick={onClose}
     >
       <div

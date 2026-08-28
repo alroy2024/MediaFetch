@@ -74,7 +74,7 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
   return createPortal(
     (
     <div
-      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/75 px-4 py-8 backdrop-blur-sm sm:py-12"
+      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/75 px-4 pt-48 pb-8 backdrop-blur-[2px]"
       onClick={onClose}
       role="presentation"
     >
