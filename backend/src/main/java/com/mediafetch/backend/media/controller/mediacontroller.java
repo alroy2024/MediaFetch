@@ -19,16 +19,15 @@ import com.mediafetch.backend.media.service.*;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-    
+
 @RestController
 @RequiredArgsConstructor
-public class MediaController {
+public class Mediacontroller {
 
     private final MediaFetchService mediaFetchService;
     private final MediaSearchService mediaSearchService;
     private final MediaListService mediaListService;
 
-    
     @GetMapping("/manga")
     @Cacheable("Manga")
     public MediaList getManga() {
@@ -42,24 +41,24 @@ public class MediaController {
     }
 
     @PostMapping("/search")
-    public MediaSearchDto fetch(@RequestBody RequestDto request){
+    public MediaSearchDto fetch(@RequestBody RequestDto request) {
         return mediaSearchService.mediaSearch(request);
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody AddDto request, @AuthenticationPrincipal UserDetails currentUser){
+    public void add(@RequestBody AddDto request, @AuthenticationPrincipal UserDetails currentUser) {
         String username = currentUser.getUsername();
-        mediaListService.mediaAdd(request,username);
+        mediaListService.mediaAdd(request, username);
     }
 
     @PostMapping("/remove")
-    public void remove(@RequestBody RemoveDto request, @AuthenticationPrincipal UserDetails currentUser){
+    public void remove(@RequestBody RemoveDto request, @AuthenticationPrincipal UserDetails currentUser) {
         String username = currentUser.getUsername();
-        mediaListService.mediaRemove(request,username);
+        mediaListService.mediaRemove(request, username);
     }
 
     @GetMapping("/mylist")
-    public List<UserMediaDto> mylist(@RequestParam String type, @AuthenticationPrincipal UserDetails currentUser){
+    public List<UserMediaDto> mylist(@RequestParam String type, @AuthenticationPrincipal UserDetails currentUser) {
         String username = currentUser.getUsername();
         return mediaListService.mediaList(username, type.toUpperCase());
     }
