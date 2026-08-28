@@ -5,6 +5,8 @@ export default async function useAddtoList(
     image: string,
     token: string,
     type: "ANIME" | "MANGA",
+    currentChapter: number,
+    totalChapter: number,
 ) {
     await fetch('http://localhost:8080/add',
         {
@@ -19,6 +21,8 @@ export default async function useAddtoList(
                 romaji: romaji,
                 image: image,
                 type: type,
+                currentChapter: currentChapter,
+                totalChapter: totalChapter,
             })
         }
     )

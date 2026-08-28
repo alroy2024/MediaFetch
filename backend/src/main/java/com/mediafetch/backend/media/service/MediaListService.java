@@ -59,6 +59,8 @@ public class MediaListService {
         newMedia.setImage(request.image());
         newMedia.setTitle(title);
         newMedia.setType(request.type());
+        newMedia.setCurrentChapter(Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter()));
+        newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
         return mediaRepository.save(newMedia);
         });
         // add media to user medias and save user

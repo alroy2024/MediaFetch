@@ -23,4 +23,10 @@ public class Novel {
 
     @Column(nullable = false)
     private String image;
+
+    @Column(nullable = false)
+    private Integer currentChapter = 0;
+
+    @Column(nullable = false)
+    private Integer totalChapter = 0;
 }

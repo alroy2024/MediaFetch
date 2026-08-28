@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import  useAddToList  from '../hooks/useAddToList';
+import AddMediaModal, { type AddMediaItem } from './AddMediaModal';
 
 
 interface SearchBarProps {
@@ -16,13 +16,17 @@ interface Search {
   }
   coverImage: {
     large: string
-  }
+  },
+  description?: string | null,
+  episodes?: number | null,
+  chapters?: number | null
 }
 
 export default function SearchBar({ onClose, token, mediaType }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<Search[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<AddMediaItem | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -70,10 +74,11 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
 
 
   return (
-    <div
+    <>
+      {!selectedMedia && <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/70 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
-    >
+      >
       <div
         className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-2xl flex flex-col gap-4 animate-scale-up"
         onClick={(e) => e.stopPropagation()}
@@ -125,8 +130,19 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
                   </div>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); 
-                      useAddToList(media.id, media.title.english, media.title.romaji, media.coverImage.large, token, mediaType);
+                      e.stopPropagation();
+                      setSelectedMedia({
+                        id: media.id,
+                        title: media.title.english || media.title.romaji,
+                        image: media.coverImage.large,
+                        summary: media.description || undefined,
+                        token,
+                        mediaType,
+                        englishTitle: media.title.english,
+                        romajiTitle: media.title.romaji,
+                        progressLabel: mediaType === "ANIME" ? "episode" : "chapter",
+                        totalProgress: mediaType === "ANIME" ? media.episodes : media.chapters,
+                      });
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >
@@ -142,6 +158,13 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
           )}
         </div>
       </div>
-    </div>
+      </div>}
+      {selectedMedia && (
+        <AddMediaModal
+          item={selectedMedia}
+          onClose={() => setSelectedMedia(null)}
+        />
+      )}
+    </>
   );
 }

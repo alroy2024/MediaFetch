@@ -59,7 +59,7 @@ public class NovelFetchService {
                 Long id = Long.parseLong(item.locator("a.g_thumb").getAttribute("data-bookid"));     
                 String title = item.locator("h3").innerText();
                 String image = item.locator("img").getAttribute("src");
-                NovelDto dto = new NovelDto(id,title,image);
+                NovelDto dto = new NovelDto(id,title,image,0,0);
                 results.add(dto);
             }
 
@@ -92,7 +92,7 @@ public class NovelFetchService {
                 Long id = Long.parseLong(item.locator("a.j_add_to_library").getAttribute("data-bookid"));     
                 String title = item.locator("a.c_l").innerText();
                 String image = item.locator("img").getAttribute("src");
-                NovelDto dto = new NovelDto(id,title,image);
+                NovelDto dto = new NovelDto(id,title,image,0,0);
                 results.add(dto);
                 if (results.size() > 19){
                     break;  

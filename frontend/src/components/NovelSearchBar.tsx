@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import  useAddNovel  from '../hooks/useAddNovel';
+import AddMediaModal, { type AddMediaItem } from './AddMediaModal';
 
 
 interface SearchBarProps {
@@ -10,13 +10,15 @@ interface SearchBarProps {
 interface Search {
   title: string,
   id: number,
-  image: string
+  image: string,
+  summary?: string
 }
 
 export default function SearchBar({ onClose, token }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<Search[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedNovel, setSelectedNovel] = useState<AddMediaItem | null>(null);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -63,7 +65,8 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
 
 
   return (
-    <div
+    <>
+      {!selectedNovel && <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/70 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
     >
@@ -120,8 +123,17 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
                   </div> 
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); 
-                      useAddNovel(novel.id,novel.title,novel.image,token);
+                      e.stopPropagation();
+                      setSelectedNovel({
+                        id: novel.id,
+                        title: novel.title,
+                        image: novel.image,
+                        summary: novel.summary,
+                        token,
+                        mediaType: "NOVEL",
+                        progressLabel: "chapter",
+                        totalProgress: null,
+                      });
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"
                   >
@@ -137,6 +149,13 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
           )}
         </div>
       </div>
-    </div>
+      </div>}
+      {selectedNovel && (
+        <AddMediaModal
+          item={selectedNovel}
+          onClose={() => setSelectedNovel(null)}
+        />
+      )}
+    </>
   );
 }

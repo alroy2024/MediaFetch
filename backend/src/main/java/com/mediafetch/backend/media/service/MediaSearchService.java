@@ -29,6 +29,9 @@ public class MediaSearchService {
                     coverImage {
                     large
                     }
+                    description(asHtml: false)
+                    episodes
+                    chapters
                 }
                 }
             }

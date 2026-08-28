@@ -22,7 +22,13 @@ public class NovelService {
     public void novelAdd(NovelDto novelDto, String username){
         User user = getUser(username);
         Novel novel = novelRepository.findById(novelDto.id()).orElseGet(() ->
-            novelRepository.save(new Novel(novelDto.id(), novelDto.title(), novelDto.image()))
+            novelRepository.save(new Novel(
+                novelDto.id(),
+                novelDto.title(),
+                novelDto.image(),
+                Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter()),
+                Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter())
+            ))
         );
 
         if (!user.getNovels().add(novel)) {
@@ -36,7 +42,9 @@ public class NovelService {
             novel -> new NovelDto(
                 novel.getId(),
                 novel.getTitle(),
-                novel.getImage()
+                novel.getImage(),
+                novel.getCurrentChapter(),
+                novel.getTotalChapter()
             )).toList();
     }
 

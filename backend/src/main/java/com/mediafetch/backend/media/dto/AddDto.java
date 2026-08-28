@@ -5,6 +5,8 @@ public record AddDto(
     String english,
     String romaji,
     String image,
-    String type
+    String type,
+    Integer currentChapter,
+    Integer totalChapter
 ) {
 }
