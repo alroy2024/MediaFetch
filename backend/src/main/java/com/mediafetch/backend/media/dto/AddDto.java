@@ -7,6 +7,8 @@ public record AddDto(
     String image,
     String type,
     Integer currentChapter,
-    Integer totalChapter
+    Integer totalChapter,
+    String status,
+    Boolean favorite
 ) {
 }

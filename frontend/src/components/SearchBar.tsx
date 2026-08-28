@@ -154,6 +154,8 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
                           : media.chapters ?? 0,
                         isUpcoming: mediaType === "ANIME" && media.status === "NOT_YET_RELEASED",
                         isOngoing: mediaType === "MANGA" && media.status === "RELEASING",
+                        status: media.status === "NOT_YET_RELEASED" ? "PLANNING" : "ONGOING",
+                        favorite: false,
                       });
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"

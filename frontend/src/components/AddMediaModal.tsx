@@ -17,17 +17,38 @@ export interface AddMediaItem {
   totalProgress?: number | null;
   isUpcoming?: boolean;
   isOngoing?: boolean;
+  status?: "WATCHED" | "READ" | "ONGOING" | "PLANNING";
+  favorite?: boolean;
+  currentProgress?: number;
 }
 
 interface AddMediaModalProps {
   item: AddMediaItem;
   onClose: () => void;
+  isDelete?: boolean;
+  onDelete?: () => Promise<void>;
 }
 
-export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
-  const [progress, setProgress] = useState(0);
+export default function AddMediaModal({ item, onClose, isDelete = false, onDelete }: AddMediaModalProps) {
+  const [progress, setProgress] = useState(item.currentProgress ?? 0);
+  const [status, setStatus] = useState<"WATCHED" | "READ" | "ONGOING" | "PLANNING">(item.status ?? "ONGOING");
+  const [favorite, setFavorite] = useState(item.favorite ?? false);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState("");
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    setIsAdding(true);
+    setError("");
+    try {
+      await onDelete();
+      onClose();
+    } catch {
+      setError("Unable to delete this item. Please try again.");
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -52,6 +73,8 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           item.token,
           progress,
           item.isUpcoming ? 0 : item.totalProgress ?? 0,
+          status,
+          favorite,
         );
       } else {
         await useAddToList(
@@ -63,6 +86,8 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           item.mediaType,
           item.isUpcoming ? 0 : progress,
           item.totalProgress ?? 0,
+          status,
+          favorite,
         );
       }
       onClose();
@@ -138,6 +163,34 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           )}
         </div>
 
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <label className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
+            <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              Status
+            </span>
+            <select
+              value={status}
+              onChange={(event) => setStatus(event.target.value as typeof status)}
+              className="mt-2 w-full bg-transparent py-2 text-white outline-none"
+            >
+              <option value={item.mediaType === "ANIME" ? "WATCHED" : "READ"}>
+                {item.mediaType === "ANIME" ? "Watched" : "Read"}
+              </option>
+              <option value="ONGOING">Ongoing</option>
+              <option value="PLANNING">Planning</option>
+            </select>
+          </label>
+          <label className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-950 p-4 text-sm text-zinc-200">
+            <input
+              type="checkbox"
+              checked={favorite}
+              onChange={(event) => setFavorite(event.target.checked)}
+              className="h-4 w-4 accent-red-500"
+            />
+            Favourite
+          </label>
+        </div>
+
         {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
 
         <div className="mt-6 flex justify-end gap-3">
@@ -150,11 +203,11 @@ export default function AddMediaModal({ item, onClose }: AddMediaModalProps) {
           </button>
           <button
             type="button"
-            onClick={handleAdd}
+            onClick={isDelete ? handleDelete : handleAdd}
             disabled={isAdding}
             className="rounded-lg bg-red-500 px-5 py-2 text-sm font-semibold text-white hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isAdding ? "Adding..." : "Add to list"}
+            {isAdding ? (isDelete ? "Deleting..." : "Adding...") : isDelete ? "Delete" : "Add to list"}
           </button>
         </div>
       </section>

@@ -31,7 +31,11 @@ public class MediaListService {
         .map(media -> new UserMediaDto(
                         media.getId(),
                         media.getTitle(),
-                        media.getImage()))
+                        media.getImage(),
+                        media.getStatus(),
+                        media.getFavorite(),
+                        media.getCurrentChapter(),
+                        media.getTotalChapter()))
                 .toList();
     }
 
@@ -61,6 +65,8 @@ public class MediaListService {
         newMedia.setType(request.type());
         newMedia.setCurrentChapter(Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter()));
         newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
+        newMedia.setStatus(normalizeStatus(request.status(), request.type()));
+        newMedia.setFavorite(Boolean.TRUE.equals(request.favorite()));
         return mediaRepository.save(newMedia);
         });
         // add media to user medias and save user
@@ -68,22 +74,33 @@ public class MediaListService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void mediaRemove(RemoveDto request, String username) {
         Integer id = Integer.parseInt(request.id());
-        // User user = userRepository.findByUsername(username)
-        // .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        mediaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Media not found or already deleted"));
-        // if (!media.getUser().getId().equals(user.getId())) {
-        // throw new IllegalArgumentException("Unauthorized: You do not have permission
-        // to delete this media");
-        // }
-        mediaRepository.deleteById(id);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        if (!user.getMedias().removeIf(media -> media.getId().equals(id))) {
+            throw new IllegalArgumentException("Media not found in your list");
+        }
+        userRepository.save(user);
     }
 
     private void validateType(String type) {
         if (!"ANIME".equals(type) && !"MANGA".equals(type)) {
             throw new IllegalArgumentException("Media type must be ANIME or MANGA");
         }
+    }
+
+    private String normalizeStatus(String status, String type) {
+        if (status == null || "WATCHED_READ".equals(status)) {
+            return "ONGOING";
+        }
+        if ("WATCHED".equals(status) && "MANGA".equals(type)) {
+            return "READ";
+        }
+        if ("READ".equals(status) && "ANIME".equals(type)) {
+            return "WATCHED";
+        }
+        return status;
     }
 }

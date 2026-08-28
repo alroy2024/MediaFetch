@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -34,6 +35,12 @@ public class NovelController {
     public void novelAdd(@RequestBody NovelDto novelDto,
                          @AuthenticationPrincipal UserDetails currentUser) {
         novelService.novelAdd(novelDto, currentUser.getUsername());
+    }
+
+    @PostMapping("/remove/{novelId}")
+    public void novelRemove(@PathVariable Long novelId,
+                            @AuthenticationPrincipal UserDetails currentUser) {
+        novelService.novelRemove(novelId, currentUser.getUsername());
     }
 
     @PostMapping

@@ -60,7 +60,7 @@ public class NovelFetchService {
                 String image = item.locator("img").getAttribute("src");
                 String url = normalizeUrl(item.locator("a.g_thumb").getAttribute("href"));
                 String description = getOptionalText(item.locator("p.fs16.c_000.ells._2.lh24"));
-                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0);
+                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false);
                 results.add(dto);
             }
 
@@ -93,7 +93,7 @@ public class NovelFetchService {
                 String image = item.locator("img").getAttribute("src");
                 String url = normalizeUrl(item.locator("a.g_thumb").getAttribute("href"));
                 String description = getOptionalText(item.locator("p.fs16.c_000.ells._2.lh24"));
-                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0);
+                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false);
                 results.add(dto);
                 if (results.size() > 19) {
                     break;

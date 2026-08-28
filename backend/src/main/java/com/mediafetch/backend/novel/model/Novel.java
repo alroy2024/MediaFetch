@@ -34,4 +34,10 @@ public class Novel {
 
     @Column(nullable = false)
     private Integer totalChapter = 0;
+
+    @Column
+    private String status = "ONGOING";
+
+    @Column
+    private Boolean favorite = false;
 }

@@ -135,6 +135,8 @@ export default function SearchBar({ onClose, token }: SearchBarProps) {
                         mediaType: "NOVEL",
                         progressLabel: "chapter",
                         totalProgress: null,
+                        status: "ONGOING",
+                        favorite: false,
                       });
                     }}
                     className="ml-auto px-3 py-1.5 text-xs font-medium text-zinc-900 bg-gray-200 hover:bg-green-500 rounded-md transition-colors shadow-sm"

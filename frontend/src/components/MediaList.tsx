@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar"
 import NovelSearchBar from "./NovelSearchBar"
-import  useRemoveFromList  from '../hooks/useRemoveFromList';
+import AddMediaModal, { type AddMediaItem } from "./AddMediaModal";
+import useRemoveFromList from '../hooks/useRemoveFromList';
+import useRemoveNovel from '../hooks/useRemoveNovel';
 
 interface Mediaprops {
   token: string;
@@ -13,15 +15,24 @@ interface Media {
   id: number;
   title: string;
   image: string;
+  status?: "WATCHED" | "READ" | "ONGOING" | "PLANNING" | "WATCHED_READ" | null;
+  favorite?: boolean | null;
+  currentChapter?: number | null;
+  totalChapter?: number | null;
 };
+
+type Filter = "ALL" | "ONGOING" | "PLANNING" | "COMPLETED" | "FAVORITE";
 
 const MyList = ({token, listType, mediaType}: Mediaprops) => {
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState({ start: 0, end: 12 });
   const [myList, setmyList] = useState<Media[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [filters, setFilters] = useState<Filter[]>(["ALL"]);
+  const [selectedMedia, setSelectedMedia] = useState<AddMediaItem | null>(null);
 
   const handleRemove = useRemoveFromList(); 
+  const handleRemoveNovel = useRemoveNovel();
   const isNovelList = listType === "novel";
 
   useEffect(() => {
@@ -54,7 +65,40 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
   }, [token, isOpen, isNovelList, mediaType]);
 
   const mediaItems = myList || [];
-  const totalMedia = mediaItems.length;
+  const completedStatus = isNovelList ? "READ" : "WATCHED";
+  const selectableStatusFilters: Filter[] = ["ONGOING", "PLANNING", "COMPLETED"];
+  const filteredItems = mediaItems.filter((media) => {
+    const matchesFavorite = !filters.includes("FAVORITE") || media.favorite === true;
+    const selectedStatusFilters = filters.filter((filter) => filter !== "ALL" && filter !== "FAVORITE");
+    const matchesStatus = selectedStatusFilters.length === 0 || selectedStatusFilters.some((filter) => {
+      if (filter === "COMPLETED") {
+        return media.status === completedStatus || media.status === "WATCHED_READ";
+      }
+      return media.status === filter;
+    });
+    return matchesFavorite && matchesStatus;
+  });
+  const totalMedia = filteredItems.length;
+
+  const toggleFilter = (selectedFilter: Filter) => {
+    setFilters((currentFilters) => {
+      if (selectedFilter === "ALL") {
+        return currentFilters.includes("FAVORITE") ? ["ALL", "FAVORITE"] : ["ALL"];
+      }
+
+      const nextFilters = currentFilters.includes(selectedFilter)
+        ? currentFilters.filter((filter) => filter !== selectedFilter && filter !== "ALL")
+        : [...currentFilters.filter((filter) => filter !== "ALL"), selectedFilter];
+
+      return selectableStatusFilters.every((filter) => nextFilters.includes(filter))
+        ? nextFilters.includes("FAVORITE") ? ["ALL", "FAVORITE"] : ["ALL"]
+        : nextFilters;
+    });
+  };
+
+  useEffect(() => {
+    setPage({ start: 0, end: 12 });
+  }, [filters]);
 
   const increment = () => {
     if (page.end < totalMedia) {
@@ -74,6 +118,23 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
     }
   };
 
+  const openDeleteModal = (media: Media) => {
+    setSelectedMedia({
+      id: media.id,
+      title: media.title,
+      image: media.image,
+      token,
+      mediaType: isNovelList ? "NOVEL" : mediaType!,
+      progressLabel: isNovelList ? "chapter" : "episode",
+      currentProgress: media.currentChapter ?? 0,
+      totalProgress: media.totalChapter ?? null,
+      status: media.status === "WATCHED_READ"
+        ? isNovelList ? "READ" : "WATCHED"
+        : media.status ?? "ONGOING",
+      favorite: media.favorite ?? false,
+    });
+  };
+
   return (
     <div className="w-full bg-[#0e0e0e] text-white p-6 font-sans rounded-xl">
       <div className="flex justify-between items-end mb-6 border-b border-gray-800 pb-2">
@@ -86,6 +147,31 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
           >
             + Add
           </button>
+
+          <details className="relative">
+            <summary className="cursor-pointer list-none border border-gray-800 bg-zinc-900/50 px-3 py-1.5 text-xs uppercase tracking-wider text-gray-300 hover:bg-zinc-800">
+              Filter
+            </summary>
+            <div className="absolute right-0 top-full z-10 mt-2 w-44 rounded-lg border border-gray-800 bg-zinc-900 p-3 shadow-xl">
+              {[
+                ["ALL", "All"],
+                ["ONGOING", "Ongoing"],
+                ["PLANNING", "Planning"],
+                ["COMPLETED", isNovelList ? "Read" : "Watched"],
+                ["FAVORITE", "Favourite"],
+              ].map(([value, label]) => (
+                <label key={value} className="flex items-center gap-2 py-1.5 text-xs text-gray-300">
+                  <input
+                    type={value === "ALL" ? "radio" : "checkbox"}
+                    checked={filters.includes(value as Filter)}
+                    onChange={() => toggleFilter(value as Filter)}
+                    className="accent-red-500"
+                  />
+                  {label}
+                </label>
+              ))}
+            </div>
+          </details>
 
           <div className="flex items-center bg-zinc-900/80 border border-gray-800 rounded-lg p-1 shadow-inner">
             <button
@@ -135,11 +221,10 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
         <p className="text-gray-400 py-10 text-center">No media added yet.</p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-8">
-          {mediaItems.slice(page.start, page.end).map((media) => (
-            <div key={media.id} className="flex flex-col gap-2 group cursor-pointer">
+          {filteredItems.slice(page.start, page.end).map((media) => (
+            <div key={media.id} className="flex flex-col gap-2 group cursor-pointer" onClick={() => openDeleteModal(media)}>
               <div
                 className="relative w-full aspect-[3/4] overflow-hidden rounded shadow-lg bg-gray-800"
-                onClick={() => !isNovelList && handleRemove(media.id, token)}
               >
                 <img
                   src={media.image}
@@ -153,6 +238,21 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
             </div>
           ))}
         </div>
+      )}
+      {selectedMedia && (
+        <AddMediaModal
+          item={selectedMedia}
+          isDelete
+          onClose={() => setSelectedMedia(null)}
+          onDelete={async () => {
+            if (selectedMedia.mediaType === "NOVEL") {
+              await handleRemoveNovel(selectedMedia.id, token);
+            } else {
+              await handleRemove(selectedMedia.id, token);
+            }
+            setmyList((currentItems) => currentItems?.filter((item) => item.id !== selectedMedia.id) ?? null);
+          }}
+        />
       )}
     </div>
   );

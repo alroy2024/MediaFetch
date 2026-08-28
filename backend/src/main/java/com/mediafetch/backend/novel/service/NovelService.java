@@ -30,7 +30,9 @@ public class NovelService {
                 novelDto.url(),
                 novelDto.description(),
                 Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter()),
-                Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter())
+                Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter()),
+                normalizeStatus(novelDto.status()),
+                Boolean.TRUE.equals(novelDto.favorite())
             ));
             int latestChapter = novelFetchService.fetchCurrentChapter(newNovel.getUrl());
             newNovel.setTotalChapter(latestChapter);
@@ -53,12 +55,28 @@ public class NovelService {
                 novel.getUrl(),
                 novel.getDescription(),
                 novel.getCurrentChapter(),
-                novel.getTotalChapter()
+                novel.getTotalChapter(),
+                novel.getStatus(),
+                novel.getFavorite()
             )).toList();
+    }
+
+    @Transactional
+    public void novelRemove(Long novelId, String username) {
+        User user = getUser(username);
+        if (!user.getNovels().removeIf(novel -> novel.getId().equals(novelId))) {
+            throw new IllegalArgumentException("Novel not found in your list");
+        }
+        userRepository.save(user);
     }
 
     private User getUser(String username) {
         return userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    private String normalizeStatus(String status) {
+        return status == null || "WATCHED_READ".equals(status) ? "ONGOING" :
+            "WATCHED".equals(status) ? "READ" : status;
     }
 }

@@ -7,7 +7,9 @@ public record NovelDto(
     String url,
     String description,
     Integer currentChapter,
-    Integer totalChapter
+    Integer totalChapter,
+    String status,
+    Boolean favorite
 ) {
     
 }

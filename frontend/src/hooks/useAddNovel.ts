@@ -7,6 +7,8 @@ export default async function useAddNovel(
     token: string,
     currentChapter: number,
     totalChapter: number,
+    status: string,
+    favorite: boolean,
 ) {
     await fetch('http://localhost:8080/novels/add',
         {
@@ -23,6 +25,8 @@ export default async function useAddNovel(
                 description: description,
                 currentChapter: currentChapter,
                 totalChapter: totalChapter,
+                status: status,
+                favorite: favorite,
             })
         }
     )
