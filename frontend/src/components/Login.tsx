@@ -28,76 +28,85 @@ function Login() {
         }
     }
     return (
-        <>
-            <div className="flex items-center justify-center text-slate-900">
-                <div className="bg-white p-4 rounded-2xl shadow-xl w-96 border border-slate-200 text-slate-900">
-                    <form onSubmit={handleSubmit}>
-                        <h1 className="text-2xl font-bold text-center text-slate-800 mb-8">
-                            {login ? 'Login' : 'Sign Up'}
-                        </h1>
+        <div className="flex items-center justify-center text-slate-100 w-full">
+            <div className="bg-slate-905 bg-slate-900 p-8 rounded-2xl shadow-xl w-full border border-slate-800/80">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <h1 className="text-2xl font-bold text-center text-white tracking-tight">
+                        {login ? 'Sign in to MediaFetch' : 'Create your account'}
+                    </h1>
 
-                        <label className="block text-slate-700 font-small mb-2">
+                    <div>
+                        <label className="block text-slate-400 font-semibold text-xs uppercase tracking-wider mb-2">
                             Username
                         </label>
                         <input
                             type="text"
                             onChange={(e) => setUsername(e.target.value)}
                             required
-                            className="w-full px-4 py-2 mb-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-300"
+                            className="w-full px-4 py-2.5 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-950/60 hover:bg-slate-950 transition-all text-sm text-white"
+                            placeholder="e.g. janesmith"
                         />
+                    </div>
 
-                        <label className="block text-slate-700 font-small mb-2">
+                    <div>
+                        <label className="block text-slate-400 font-semibold text-xs uppercase tracking-wider mb-2">
                             Password
                         </label>
                         <input
                             type="password"
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="w-full px-4 py-2 mb-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-300"
+                            className="w-full px-4 py-2.5 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-950/60 hover:bg-slate-950 transition-all text-sm text-white"
+                            placeholder="••••••••"
                         />
+                    </div>
 
-                        {!login && (
-                            <>
-                                <label className="block text-slate-700 font-small mb-2">
-                                    Gmail
-                                </label>
-                                <input
-                                    type="email"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="w-full px-4 py-2 mb-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-300"
-                                />
-                            </>)}
-
-
-                        <div className="mt-1">
-
-                            <button type="submit" className="w-full px-6 py-2 rounded-lg bg-sky-500 hover:bg-green-600 text-white transition-all duration-300 cursor-pointer font-semibold shadow-md hover:shadow-lg">
-                                {login ? 'Login' : 'Sign Up'}
-                            </button>
-                            <p className="text-sky-600 text-center mt-3 ">
-                                <button
-                                    type="button"
-                                    onClick={() => { setLogin(!login); setFormErrors([]); }}
-                                    className="font-medium hover:underline focus:outline-none"
-                                >
-                                    {login ? 'Create a new account' : 'Already have an account?'}
-                                </button>
-                            </p>
-                        </div>
-                    </form>
-                    {formErrors.length > 0 && (
-                        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-                            <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }} >
-                                {formErrors.map((error, index) => (
-                                    <li key={index}>{error}</li>
-                                ))}
-                            </ul>
+                    {!login && (
+                        <div>
+                            <label className="block text-slate-400 font-semibold text-xs uppercase tracking-wider mb-2">
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="w-full px-4 py-2.5 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-950/60 hover:bg-slate-950 transition-all text-sm text-white"
+                                placeholder="name@example.com"
+                            />
                         </div>
                     )}
-                </div>
+
+                    <div className="pt-2">
+                        <button
+                            type="submit"
+                            className="w-full px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-all shadow-md shadow-indigo-600/10 cursor-pointer hover:shadow-lg hover:shadow-indigo-600/20 active:scale-[0.98]"
+                        >
+                            {login ? 'Sign In' : 'Register Account'}
+                        </button>
+                        
+                        <p className="text-center mt-4">
+                            <button
+                                type="button"
+                                onClick={() => { setLogin(!login); setFormErrors([]); }}
+                                className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 hover:underline focus:outline-none"
+                            >
+                                {login ? "New here? Create a new account" : "Already have an account? Sign in"}
+                            </button>
+                        </p>
+                    </div>
+                </form>
+
+                {formErrors.length > 0 && (
+                    <div className="mt-5 p-4 bg-rose-950/40 border border-rose-900/50 text-rose-200 rounded-xl text-xs">
+                        <ul className="list-disc pl-4 space-y-1">
+                            {formErrors.map((error, index) => (
+                                <li key={index} className="font-medium">{error}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     )
 }
 

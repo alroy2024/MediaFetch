@@ -10,27 +10,37 @@ function Home() {
     const token = useValidToken();
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white">
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(239,68,68,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.16),_transparent_25%)]" />
+        <div className="min-h-screen bg-slate-950 text-slate-100 relative">
+            {/* Background gradients */}
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_45%),radial-gradient(circle_at_bottom_right,_rgba(99,102,241,0.03),_transparent_35%)]" />
 
             <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col">
-                <nav className="sticky top-0 z-20 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
-                    <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+                {/* Navbar */}
+                <nav className="sticky top-0 z-20 border-b border-slate-900 bg-slate-950/80 backdrop-blur-xl">
+                    <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
                         <Link
                             to="/"
-                            className="text-2xl font-black tracking-tight text-red-400 transition-colors hover:text-red-300"
+                            className="flex items-center gap-2.5 group"
                         >
-                            MediaFetch
+                            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/25 group-hover:scale-105 transition-transform">
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+                                </svg>
+                            </div>
+                            <span className="text-xl font-extrabold tracking-tight text-white">
+                                Media<span className="text-indigo-500">Fetch</span>
+                            </span>
                         </Link>
 
-                        <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-slate-900/80 p-1 md:flex">
+                        {/* Centered navigation tabs switcher */}
+                        <div className="hidden items-center gap-1 rounded-full border border-slate-800 bg-slate-900/60 p-1 md:flex">
                             {tabs.map((tab) => (
                                 <button
                                     key={tab}
                                     onClick={() => setSelected(tab)}
-                                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${select === tab
-                                        ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-900/30"
-                                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                                    className={`rounded-full px-5 py-2 text-sm font-bold transition-all cursor-pointer ${select === tab
+                                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
                                         }`}
                                 >
                                     {tab}
@@ -38,11 +48,12 @@ function Home() {
                             ))}
                         </div>
 
+                        {/* Notifications button */}
                         <Link
                             to="/Notification"
-                            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition-all hover:border-red-400/70 hover:bg-slate-800"
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-300 transition-all hover:border-indigo-500/50 hover:bg-slate-800 hover:text-indigo-400 shadow-sm"
                         >
-                            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-red-400" />
+                            <span className="inline-flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse" />
                             Notifications
                         </Link>
                     </div>
@@ -50,21 +61,23 @@ function Home() {
 
                 <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-7xl">
-                        <section className="rounded-[28px] border border-white/10 bg-slate-900/60 p-4 shadow-2xl backdrop-blur-[2px] md:p-5">
-                            <div className="mb-5 flex flex-col gap-4 border-b border-white/10 pb-4 md:flex-row md:items-center md:justify-between">
+                        {/* Feed card frame */}
+                        <section className="rounded-[28px] border border-slate-900/80 bg-slate-900/40 p-6 shadow-2xl shadow-black/20 md:p-8">
+                            <div className="mb-6 flex flex-col gap-4 border-b border-slate-900 pb-5 md:flex-row md:items-center md:justify-between">
                                 <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-300">Library</p>
-                                    <h2 className="mt-2 text-2xl font-semibold text-white">{select} feed</h2>
+                                    <p className="text-xs font-bold uppercase tracking-widest text-indigo-400">Library feed</p>
+                                    <h2 className="mt-1 text-2xl font-bold text-white">{select} Collection</h2>
                                 </div>
 
-                                <div className="flex flex-wrap gap-2 md:hidden">
+                                {/* Mobile fallback selector */}
+                                <div className="flex flex-wrap gap-1.5 md:hidden">
                                     {tabs.map((tab) => (
                                         <button
                                             key={tab}
                                             onClick={() => setSelected(tab)}
-                                            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${select === tab
-                                                ? "bg-red-500 text-white"
-                                                : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                                            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all cursor-pointer ${select === tab
+                                                ? "bg-indigo-600 text-white shadow-sm"
+                                                : "bg-slate-900 text-slate-400 hover:bg-slate-800"
                                                 }`}
                                         >
                                             {tab}
@@ -74,13 +87,13 @@ function Home() {
                             </div>
 
                             {token ? (
-                                <div className="rounded-2xl border border-white/5 bg-slate-950/60 p-3">
+                                <div className="rounded-2xl border border-slate-800/60 bg-slate-950/40 p-4 min-h-[300px]">
                                     {select === "Manga" && <Manga token={token} />}
                                     {select === "Novel" && <Novel token={token} />}
                                     {select === "Anime" && <Anime token={token} />}
                                 </div>
                             ) : (
-                                <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-dashed border-slate-700 bg-slate-950/50 text-slate-400">
+                                <div className="flex min-h-[280px] items-center justify-center rounded-2xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-500 font-medium">
                                     Loading your collections...
                                 </div>
                             )}

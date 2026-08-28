@@ -29,15 +29,10 @@ public class Novel {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false)
-    private Integer currentChapter = 0;
+
 
     @Column(nullable = false)
     private Integer totalChapter = 0;
 
-    @Column
-    private String status = "ONGOING";
 
-    @Column
-    private Boolean favorite = false;
 }

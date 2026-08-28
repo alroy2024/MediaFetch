@@ -13,14 +13,14 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MediaFetchService{
+public class MediaFetchService {
 
     private final WebClient webClient;
 
-    private static final String query = """
-    query ($page: Int, $perPage: Int, $type: MediaType) {
+    private static final String ANIME_QUERY = """
+    query ($page: Int, $perPage: Int) {
         releasing : Page(page: $page, perPage: $perPage) {
-            media(status: RELEASING, type: $type, sort: [POPULARITY_DESC]) {
+            media(status: RELEASING, type: ANIME, sort: [POPULARITY_DESC]) {
                 id
                 title {
                     romaji
@@ -32,7 +32,7 @@ public class MediaFetchService{
             }
         }
         finished : Page(page: $page, perPage: $perPage) {
-            media(status: NOT_YET_RELEASED, type: $type, sort: [POPULARITY_DESC]){
+            media(status: NOT_YET_RELEASED, type: ANIME, sort: [POPULARITY_DESC]){
                 id
                 title {
                     romaji
@@ -45,14 +45,44 @@ public class MediaFetchService{
         }
     }
 """;
+
+    private static final String MANGA_QUERY = """
+    query ($page: Int, $perPage: Int) {
+        releasing : Page(page: $page, perPage: $perPage) {
+            media(status: RELEASING, type: MANGA, sort: [POPULARITY_DESC]) {
+                id
+                title {
+                    romaji
+                    english
+                }
+                coverImage {
+                    large
+                }
+            }
+        }
+        finished : Page(page: $page, perPage: $perPage) {
+            media(type: MANGA, sort: [POPULARITY_DESC]){
+                id
+                title {
+                    romaji
+                    english
+                }
+                coverImage {
+                    large
+                }
+            }
+        }
+    }
+""";
+
     @Cacheable(value = "media", key = "#type")
     public MediaList fetchMedia(String type) {
-        Map<String, Object> variables = Map.of("page", 1, "perPage", 50, "type", type);
+        String activeQuery = "MANGA".equalsIgnoreCase(type) ? MANGA_QUERY : ANIME_QUERY;
+        Map<String, Object> variables = Map.of("page", 1, "perPage", 50);
         return webClient.post()
-                .bodyValue(new GraphQlRequest(query, variables))
+                .bodyValue(new GraphQlRequest(activeQuery, variables))
                 .retrieve()
                 .bodyToMono(MediaList.class)
                 .block();
-    };
+    }
 }
-    

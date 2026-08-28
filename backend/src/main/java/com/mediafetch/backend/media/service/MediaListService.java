@@ -11,7 +11,9 @@ import com.mediafetch.backend.media.dto.AddDto;
 import com.mediafetch.backend.media.dto.RemoveDto;
 import com.mediafetch.backend.media.dto.UserMediaDto;
 import com.mediafetch.backend.media.model.Media;
+import com.mediafetch.backend.media.model.UserMedia;
 import com.mediafetch.backend.media.repository.MediaRepository;
+import com.mediafetch.backend.media.repository.UserMediaRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,56 +24,56 @@ public class MediaListService {
 
     private final MediaRepository mediaRepository;
     private final UserRepository userRepository;
+    private final UserMediaRepository userMediaRepository;
 
     public List<UserMediaDto> mediaList(String username, String type) {
         validateType(type);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return mediaRepository.findMediasByUserIdAndType(user.getId(), type).stream()
-        .map(media -> new UserMediaDto(
-                        media.getId(),
-                        media.getTitle(),
-                        media.getImage(),
-                        media.getStatus(),
-                        media.getFavorite(),
-                        media.getCurrentChapter(),
-                        media.getTotalChapter()))
+        return userMediaRepository.findByUserIdAndMediaType(user.getId(), type).stream()
+                .map(um -> new UserMediaDto(
+                        um.getMedia().getId(),
+                        um.getMedia().getTitle(),
+                        um.getMedia().getImage(),
+                        um.getStatus(),
+                        um.getFavorite(),
+                        um.getCurrentChapter(),
+                        um.getMedia().getTotalChapter()))
                 .toList();
     }
 
     @Transactional
-    public void mediaAdd(AddDto request,String username) {
-        // get request media id
+    public void mediaAdd(AddDto request, String username) {
         Integer mediaId;
-            try {
-                mediaId = Integer.parseInt(request.id());
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid media ID format provided.");
-            }
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        // check request media already added by user
-        validateType(request.type());
-        if (mediaRepository.hasMedia(user.getId(), mediaId, request.type())) {
-        throw new IllegalArgumentException("Media Already Added to your list");
+        try {
+            mediaId = Integer.parseInt(request.id());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid media ID format provided.");
         }
-        // see if request media present in media table or else create it
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        validateType(request.type());
+        if (userMediaRepository.existsByUserIdAndMediaIdAndType(user.getId(), mediaId, request.type())) {
+            throw new IllegalArgumentException("Media Already Added to your list");
+        }
         Media media = mediaRepository.findById(mediaId).orElseGet(() -> {
-        String title = Objects.requireNonNullElse(request.english(), request.romaji());
-        Media newMedia = new Media();
-        newMedia.setId(mediaId);
-        newMedia.setImage(request.image());
-        newMedia.setTitle(title);
-        newMedia.setType(request.type());
-        newMedia.setCurrentChapter(Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter()));
-        newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
-        newMedia.setStatus(normalizeStatus(request.status(), request.type()));
-        newMedia.setFavorite(Boolean.TRUE.equals(request.favorite()));
-        return mediaRepository.save(newMedia);
+            String title = Objects.requireNonNullElse(request.english(), request.romaji());
+            Media newMedia = new Media();
+            newMedia.setId(mediaId);
+            newMedia.setImage(request.image());
+            newMedia.setTitle(title);
+            newMedia.setType(request.type());
+            newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
+            return mediaRepository.save(newMedia);
         });
-        // add media to user medias and save user
-        user.getMedias().add(media);
-        userRepository.save(user);
+
+        UserMedia userMedia = new UserMedia();
+        userMedia.setUser(user);
+        userMedia.setMedia(media);
+        userMedia.setCurrentChapter(Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter()));
+        userMedia.setStatus(normalizeStatus(request.status(), request.type()));
+        userMedia.setFavorite(Boolean.TRUE.equals(request.favorite()));
+        userMediaRepository.save(userMedia);
     }
 
     @Transactional
@@ -79,10 +81,9 @@ public class MediaListService {
         Integer id = Integer.parseInt(request.id());
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        if (!user.getMedias().removeIf(media -> media.getId().equals(id))) {
-            throw new IllegalArgumentException("Media not found in your list");
-        }
-        userRepository.save(user);
+        UserMedia userMedia = userMediaRepository.findByUserIdAndMediaId(user.getId(), id)
+                .orElseThrow(() -> new IllegalArgumentException("Media not found in your list"));
+        userMediaRepository.delete(userMedia);
     }
 
     private void validateType(String type) {

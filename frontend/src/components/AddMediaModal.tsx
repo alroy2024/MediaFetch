@@ -103,40 +103,40 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
   return createPortal(
     (
     <div
-      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/75 px-4 pt-48 pb-8 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-950/60 px-4 pt-48 pb-8 backdrop-blur-[2px]"
       onClick={onClose}
       role="presentation"
     >
       <section
-        className="max-h-full w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-700 bg-zinc-900 p-5 text-white shadow-2xl sm:p-7"
+        className="max-h-full w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-6 text-slate-100 shadow-2xl sm:p-8 animate-scale-up"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-media-title"
       >
-        <div className="flex gap-5">
+        <div className="flex gap-6 flex-col sm:flex-row">
           <img
             src={item.image}
             alt=""
             referrerPolicy="no-referrer"
-            className="h-40 w-28 shrink-0 rounded-lg object-cover sm:h-52 sm:w-36"
+            className="h-52 w-36 shrink-0 rounded-2xl object-cover border border-slate-800 shadow-sm mx-auto sm:mx-0"
           />
           <div className="min-w-0 flex-1">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-red-300">
-              Add to your list
+            <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-indigo-400">
+              {isDelete ? "Update Collection" : "Add to Library"}
             </p>
-            <h2 id="add-media-title" className="text-xl font-semibold text-white sm:text-2xl">
+            <h2 id="add-media-title" className="text-xl sm:text-2xl font-extrabold text-white">
               {item.title}
             </h2>
-            <p className="mt-4 max-h-36 overflow-y-auto pr-2 text-sm leading-6 text-zinc-300">
+            <p className="mt-4 max-h-36 overflow-y-auto pr-2 text-sm leading-relaxed text-slate-400">
               {summary || "No summary is available for this title yet."}
             </p>
           </div>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <label className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
-            <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <label className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+            <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               {item.progressLabel} reached
             </span>
             <input
@@ -146,15 +146,15 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
               value={item.isUpcoming ? 0 : progress}
               disabled={item.isUpcoming}
               onChange={(event) => setProgress(Math.max(0, Number(event.target.value)))}
-              className="mt-2 w-full border-b border-zinc-600 bg-transparent py-2 text-2xl font-semibold text-white outline-none focus:border-red-400"
+              className="mt-2 w-full border-b border-slate-800 bg-transparent py-1.5 text-2xl font-bold text-white outline-none focus:border-indigo-500 transition-colors"
             />
           </label>
           {(item.mediaType === "ANIME" || item.mediaType === "MANGA") && (
-            <div className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
-              <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <div className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4 flex flex-col justify-center">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-555 text-slate-500">
                 {item.mediaType === "ANIME" ? "Current total episodes" : "Chapter status"}
               </span>
-              <strong className="mt-3 block text-2xl font-semibold text-white">
+              <strong className="mt-2 block text-2xl font-extrabold text-white">
                 {item.isOngoing
                   ? "Ongoing"
                   : item.totalProgress == null ? "Unavailable" : item.totalProgress}
@@ -164,40 +164,40 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <label className="rounded-xl border border-zinc-700 bg-zinc-950 p-4">
-            <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <label className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+            <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Status
             </span>
             <select
               value={status}
               onChange={(event) => setStatus(event.target.value as typeof status)}
-              className="mt-2 w-full bg-transparent py-2 text-white outline-none"
+              className="mt-2 w-full bg-transparent py-1 text-slate-200 font-semibold outline-none border-b border-slate-800 focus:border-indigo-500 transition-colors cursor-pointer"
             >
-              <option value={item.mediaType === "ANIME" ? "WATCHED" : "READ"}>
+              <option value={item.mediaType === "ANIME" ? "WATCHED" : "READ"} className="bg-slate-900 text-white">
                 {item.mediaType === "ANIME" ? "Watched" : "Read"}
               </option>
-              <option value="ONGOING">Ongoing</option>
-              <option value="PLANNING">Planning</option>
+              <option value="ONGOING" className="bg-slate-900 text-white">Ongoing</option>
+              <option value="PLANNING" className="bg-slate-900 text-white">Planning</option>
             </select>
           </label>
-          <label className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-950 p-4 text-sm text-zinc-200">
+          <label className="flex items-center gap-3.5 rounded-2xl border border-slate-800 bg-slate-950/40 p-4 text-sm font-semibold text-slate-300 cursor-pointer hover:bg-slate-900/60 transition-colors">
             <input
               type="checkbox"
               checked={favorite}
               onChange={(event) => setFavorite(event.target.checked)}
-              className="h-4 w-4 accent-red-500"
+              className="h-4.5 w-4.5 accent-indigo-500 rounded cursor-pointer"
             />
-            Favourite
+            Add to Favourites
           </label>
         </div>
 
-        {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+        {error && <p className="mt-4 text-sm font-semibold text-rose-455 text-rose-400">{error}</p>}
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-8 flex justify-end gap-3.5 border-t border-slate-800 pt-5">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:border-zinc-500 hover:text-white"
+            className="rounded-xl border border-slate-800 hover:bg-slate-850 px-5 py-2.5 text-sm font-semibold text-slate-400 hover:text-white transition cursor-pointer"
           >
             Cancel
           </button>
@@ -205,9 +205,13 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
             type="button"
             onClick={isDelete ? handleDelete : handleAdd}
             disabled={isAdding}
-            className="rounded-lg bg-red-500 px-5 py-2 text-sm font-semibold text-white hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+            className={`rounded-xl px-6 py-2.5 text-sm font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer shadow-sm ${
+              isDelete 
+                ? "bg-rose-600 hover:bg-rose-700 shadow-rose-600/10" 
+                : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/10"
+            }`}
           >
-            {isAdding ? (isDelete ? "Deleting..." : "Adding...") : isDelete ? "Delete" : "Add to list"}
+            {isAdding ? (isDelete ? "Deleting..." : "Adding...") : isDelete ? "Delete Title" : "Add to list"}
           </button>
         </div>
       </section>

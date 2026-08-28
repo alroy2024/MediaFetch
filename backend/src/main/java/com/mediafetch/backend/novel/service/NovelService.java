@@ -6,68 +6,80 @@ import com.mediafetch.backend.auth.model.User;
 import com.mediafetch.backend.auth.repository.UserRepository;
 import com.mediafetch.backend.novel.dto.NovelDto;
 import com.mediafetch.backend.novel.model.Novel;
+import com.mediafetch.backend.novel.model.UserNovel;
 import com.mediafetch.backend.novel.repository.NovelRepository;
+import com.mediafetch.backend.novel.repository.UserNovelRepository;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-
 public class NovelService {
 
     private final NovelRepository novelRepository;
     private final UserRepository userRepository;
     private final NovelFetchService novelFetchService;
+    private final UserNovelRepository userNovelRepository;
 
     @Transactional
     public void novelAdd(NovelDto novelDto, String username){
         User user = getUser(username);
+        if (userNovelRepository.existsByUserIdAndNovelId(user.getId(), novelDto.id())) {
+            throw new IllegalArgumentException("Novel already added to your list");
+        }
+
         Novel novel = novelRepository.findById(novelDto.id()).orElseGet(() -> {
-            Novel newNovel = novelRepository.save(new Novel(
-                novelDto.id(),
-                novelDto.title(),
-                novelDto.image(),
-                novelDto.url(),
-                novelDto.description(),
-                Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter()),
-                Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter()),
-                normalizeStatus(novelDto.status()),
-                Boolean.TRUE.equals(novelDto.favorite())
-            ));
+            Novel newNovel = new Novel();
+            newNovel.setId(novelDto.id());
+            newNovel.setTitle(novelDto.title());
+            newNovel.setImage(novelDto.image());
+            newNovel.setUrl(novelDto.url());
+            newNovel.setDescription(novelDto.description());
+            newNovel.setTotalChapter(Math.max(0, novelDto.totalChapter() == null ? 0 : novelDto.totalChapter()));
+
             int latestChapter = novelFetchService.fetchCurrentChapter(newNovel.getUrl());
             newNovel.setTotalChapter(latestChapter);
-            newNovel.setCurrentChapter(Math.min(newNovel.getCurrentChapter(), latestChapter));
             return novelRepository.save(newNovel);
         });
 
-        if (!user.getNovels().add(novel)) {
-            throw new IllegalArgumentException("Novel already added to your list");
+        UserNovel userNovel = new UserNovel();
+        userNovel.setUser(user);
+        userNovel.setNovel(novel);
+        
+        int currentProgress = Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter());
+        if (novel.getTotalChapter() > 0) {
+            currentProgress = Math.min(currentProgress, novel.getTotalChapter());
         }
-        userRepository.save(user);
+        userNovel.setCurrentChapter(currentProgress);
+        userNovel.setStatus(normalizeStatus(novelDto.status()));
+        userNovel.setFavorite(Boolean.TRUE.equals(novelDto.favorite()));
+        userNovelRepository.save(userNovel);
     }
 
     public List<NovelDto> novelFetch(String username){
-        return getUser(username).getNovels().stream().map(
-            novel -> new NovelDto(
-                novel.getId(),
-                novel.getTitle(),
-                novel.getImage(),
-                novel.getUrl(),
-                novel.getDescription(),
-                novel.getCurrentChapter(),
-                novel.getTotalChapter(),
-                novel.getStatus(),
-                novel.getFavorite()
+        User user = getUser(username);
+        return userNovelRepository.findByUserId(user.getId()).stream().map(
+            un -> new NovelDto(
+                un.getNovel().getId(),
+                un.getNovel().getTitle(),
+                un.getNovel().getImage(),
+                un.getNovel().getUrl(),
+                un.getNovel().getDescription(),
+                un.getCurrentChapter(),
+                un.getNovel().getTotalChapter(),
+                un.getStatus(),
+                un.getFavorite()
             )).toList();
     }
 
     @Transactional
     public void novelRemove(Long novelId, String username) {
         User user = getUser(username);
-        if (!user.getNovels().removeIf(novel -> novel.getId().equals(novelId))) {
-            throw new IllegalArgumentException("Novel not found in your list");
-        }
-        userRepository.save(user);
+        UserNovel userNovel = userNovelRepository.findByUserIdAndNovelId(user.getId(), novelId)
+                .orElseThrow(() -> new IllegalArgumentException("Novel not found in your list"));
+        userNovelRepository.delete(userNovel);
     }
 
     private User getUser(String username) {

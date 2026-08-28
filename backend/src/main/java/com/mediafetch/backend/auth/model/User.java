@@ -5,7 +5,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.mediafetch.backend.media.model.Media;
+import com.mediafetch.backend.media.model.UserMedia;
 import com.mediafetch.backend.novel.model.Novel;
+import com.mediafetch.backend.novel.model.UserNovel;
 
 import java.util.*;
 import jakarta.persistence.*;
@@ -36,23 +38,13 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_media",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "media_id")
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(lombok.AccessLevel.NONE)
-    private Set<Media> medias = new HashSet<>(); 
+    private Set<UserMedia> userMedias = new HashSet<>(); 
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_novel",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "novel_id")
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(lombok.AccessLevel.NONE)
-    private Set<Novel> novels = new HashSet<>();
+    private Set<UserNovel> userNovels = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
