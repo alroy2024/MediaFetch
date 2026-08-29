@@ -38,7 +38,8 @@ public class MediaListService {
                         um.getStatus(),
                         um.getFavorite(),
                         um.getCurrentChapter(),
-                        um.getMedia().getTotalChapter()))
+                        um.getMedia().getTotalChapter(),
+                        um.getMedia().getDescription()))
                 .toList();
     }
 
@@ -64,6 +65,7 @@ public class MediaListService {
             newMedia.setTitle(title);
             newMedia.setType(request.type());
             newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
+            newMedia.setDescription(request.description());
             return mediaRepository.save(newMedia);
         });
 

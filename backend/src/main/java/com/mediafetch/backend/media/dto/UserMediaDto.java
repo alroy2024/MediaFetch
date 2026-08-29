@@ -7,7 +7,8 @@ public record UserMediaDto(
     String status,
     Boolean favorite,
     Integer currentChapter,
-    Integer totalChapter
+    Integer totalChapter,
+    String description
 ) {
     
 }

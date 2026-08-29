@@ -9,6 +9,7 @@ export default async function useAddtoList(
     totalChapter: number,
     status: string,
     favorite: boolean,
+    description: string,
 ) {
     await fetch('http://localhost:8080/add',
         {
@@ -27,6 +28,7 @@ export default async function useAddtoList(
                 totalChapter: totalChapter,
                 status: status,
                 favorite: favorite,
+                description: description,
             })
         }
     )

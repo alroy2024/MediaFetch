@@ -24,6 +24,9 @@ public class Media {
     @Column(nullable = false)
     private String type;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
 
 
     @Column(nullable = false)

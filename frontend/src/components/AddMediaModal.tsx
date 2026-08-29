@@ -30,7 +30,7 @@ interface AddMediaModalProps {
 }
 
 export default function AddMediaModal({ item, onClose, isDelete = false, onDelete }: AddMediaModalProps) {
-  const [progress, setProgress] = useState(item.currentProgress ?? 0);
+  const [progress, setProgress] = useState<number | "">(item.currentProgress ?? 0);
   const [status, setStatus] = useState<"WATCHED" | "READ" | "ONGOING" | "PLANNING">(item.status ?? "ONGOING");
   const [favorite, setFavorite] = useState(item.favorite ?? false);
   const [isAdding, setIsAdding] = useState(false);
@@ -63,6 +63,7 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
     setIsAdding(true);
     setError("");
     try {
+      const finalProgress = progress === "" ? 0 : progress;
       if (item.mediaType === "NOVEL") {
         await useAddNovel(
           item.id,
@@ -71,7 +72,7 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
           item.url || "",
           item.summary || "",
           item.token,
-          progress,
+          finalProgress,
           item.isUpcoming ? 0 : item.totalProgress ?? 0,
           status,
           favorite,
@@ -84,14 +85,15 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
           item.image,
           item.token,
           item.mediaType,
-          item.isUpcoming ? 0 : progress,
+          item.isUpcoming ? 0 : finalProgress,
           item.totalProgress ?? 0,
           status,
           favorite,
+          item.summary || "",
         );
       }
       onClose();
-    } catch {
+    } catch (error) {
       setError("Unable to add this item. Please try again.");
     } finally {
       setIsAdding(false);
@@ -145,7 +147,18 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
               max={item.totalProgress ?? undefined}
               value={item.isUpcoming ? 0 : progress}
               disabled={item.isUpcoming}
-              onChange={(event) => setProgress(Math.max(0, Number(event.target.value)))}
+              onChange={(event) => {
+                const val = event.target.value;
+                if (val === "") {
+                  setProgress("");
+                } else {
+                  let num = Math.max(0, parseInt(val, 10) || 0);
+                  if (item.totalProgress != null && item.totalProgress > 0) {
+                    num = Math.min(num, item.totalProgress);
+                  }
+                  setProgress(num);
+                }
+              }}
               className="mt-2 w-full border-b border-slate-800 bg-transparent py-1.5 text-2xl font-bold text-white outline-none focus:border-indigo-500 transition-colors"
             />
           </label>
@@ -160,7 +173,7 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
             <strong className="mt-2 block text-2xl font-extrabold text-white">
               {item.mediaType === "NOVEL"
                 ? (item.totalProgress == null || item.totalProgress === 0 ? "Unavailable" : item.totalProgress)
-                : item.isOngoing
+                : (item.isOngoing || item.totalProgress === 0)
                 ? "Ongoing"
                 : item.totalProgress == null ? "Unavailable" : item.totalProgress}
             </strong>

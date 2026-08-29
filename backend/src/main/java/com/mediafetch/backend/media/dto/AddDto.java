@@ -9,6 +9,7 @@ public record AddDto(
     Integer currentChapter,
     Integer totalChapter,
     String status,
-    Boolean favorite
+    Boolean favorite,
+    String description
 ) {
 }
