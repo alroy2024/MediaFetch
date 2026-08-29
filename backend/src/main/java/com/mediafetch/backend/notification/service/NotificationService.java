@@ -2,6 +2,7 @@ package com.mediafetch.backend.notification.service;
 
 import com.mediafetch.backend.auth.model.User;
 import com.mediafetch.backend.auth.repository.UserRepository;
+import com.mediafetch.backend.media.model.Media;
 import com.mediafetch.backend.novel.model.Novel;
 import com.mediafetch.backend.notification.dto.NotificationDto;
 import com.mediafetch.backend.notification.model.Notification;
@@ -63,5 +64,29 @@ public class NotificationService {
 
     public boolean hasNotification(Long userId, String message) {
         return notificationRepository.existsByUserIdAndMessage(userId, message);
+    }
+
+    public boolean hasNotificationForMedia(Long userId, Integer mediaId) {
+        return notificationRepository.existsByUserIdAndMediaId(userId, mediaId);
+    }
+
+    @Transactional
+    public void createMediaNotification(User user, Media media, String message) {
+        Notification notification = new Notification();
+        notification.setUser(user);
+        notification.setMedia(media);
+        notification.setMessage(message);
+        notification.setDismissed(false);
+        notificationRepository.save(notification);
+    }
+
+    @Transactional
+    public void updateMediaNotification(Long userId, Integer mediaId, String message) {
+        notificationRepository.findByUserIdAndMediaId(userId, mediaId).ifPresent(notif -> {
+            notif.setMessage(message);
+            notif.setDismissed(false);
+            notif.setCreatedAt(java.time.LocalDateTime.now());
+            notificationRepository.save(notif);
+        });
     }
 }

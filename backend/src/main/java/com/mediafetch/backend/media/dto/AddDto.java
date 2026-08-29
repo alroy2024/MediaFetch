@@ -10,6 +10,8 @@ public record AddDto(
     Integer totalChapter,
     String status,
     Boolean favorite,
-    String description
+    String description,
+    Integer nextEpisode,
+    Long nextAiringAt
 ) {
 }

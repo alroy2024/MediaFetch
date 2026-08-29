@@ -1,6 +1,7 @@
 package com.mediafetch.backend.notification.model;
 
 import com.mediafetch.backend.auth.model.User;
+import com.mediafetch.backend.media.model.Media;
 import com.mediafetch.backend.novel.model.Novel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +12,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "notifications", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_id", "novel_id"})
+    @UniqueConstraint(columnNames = {"user_id", "novel_id"}),
+    @UniqueConstraint(columnNames = {"user_id", "media_id"})
 })
 @Getter
 @Setter
@@ -30,6 +32,10 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "novel_id")
     private Novel novel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id")
+    private Media media;
 
     @Column(nullable = false)
     private String message;

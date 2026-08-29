@@ -10,6 +10,8 @@ export default async function useAddtoList(
     status: string,
     favorite: boolean,
     description: string,
+    nextEpisode: number | null,
+    nextAiringAt: number | null,
 ) {
     await fetch('http://localhost:8080/add',
         {
@@ -29,6 +31,8 @@ export default async function useAddtoList(
                 status: status,
                 favorite: favorite,
                 description: description,
+                nextEpisode: nextEpisode,
+                nextAiringAt: nextAiringAt,
             })
         }
     )

@@ -15,7 +15,7 @@ public record MediaDto(
         }
         public record CoverImage(String large) {
         }
-        public record NextAiringEpisode(Integer episode) {
+        public record NextAiringEpisode(Integer episode, Long airingAt) {
         }
     }
 

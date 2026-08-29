@@ -1,6 +1,7 @@
 package com.mediafetch.backend.media.repository;
 
 import com.mediafetch.backend.media.model.UserMedia;
+import com.mediafetch.backend.auth.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,7 @@ public interface UserMediaRepository extends JpaRepository<UserMedia, Long> {
 
     @Query("SELECT COUNT(um) > 0 FROM UserMedia um WHERE um.user.id = :userId AND um.media.id = :mediaId AND um.media.type = :type")
     boolean existsByUserIdAndMediaIdAndType(@Param("userId") Long userId, @Param("mediaId") Integer mediaId, @Param("type") String type);
+
+    @Query("SELECT um.user FROM UserMedia um WHERE um.media.id = :mediaId AND um.status != 'WATCHED'")
+    List<User> findUsersByMediaId(@Param("mediaId") Integer mediaId);
 }

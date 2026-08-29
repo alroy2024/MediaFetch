@@ -35,6 +35,7 @@ public class MediaSearchService {
                     status
                     nextAiringEpisode {
                     episode
+                    airingAt
                     }
                 }
                 }

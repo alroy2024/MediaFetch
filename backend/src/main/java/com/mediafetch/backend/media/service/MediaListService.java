@@ -66,6 +66,8 @@ public class MediaListService {
             newMedia.setType(request.type());
             newMedia.setTotalChapter(Math.max(0, request.totalChapter() == null ? 0 : request.totalChapter()));
             newMedia.setDescription(request.description());
+            newMedia.setNextEpisode(request.nextEpisode());
+            newMedia.setNextAiringAt(request.nextAiringAt());
             return mediaRepository.save(newMedia);
         });
 

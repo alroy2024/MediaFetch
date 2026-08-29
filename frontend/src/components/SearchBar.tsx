@@ -23,6 +23,7 @@ interface Search {
   status?: string | null,
   nextAiringEpisode?: {
     episode: number;
+    airingAt: number;
   } | null
 }
 
@@ -159,6 +160,8 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
                         isOngoing: mediaType === "MANGA" && media.status === "RELEASING",
                         status: media.status === "NOT_YET_RELEASED" ? "PLANNING" : "ONGOING",
                         favorite: false,
+                        nextEpisode: media.nextAiringEpisode?.episode ?? null,
+                        nextAiringAt: media.nextAiringEpisode?.airingAt ?? null,
                       });
                     }}
                     className="ml-auto px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm shadow-indigo-600/10 hover:shadow-md cursor-pointer active:scale-95"

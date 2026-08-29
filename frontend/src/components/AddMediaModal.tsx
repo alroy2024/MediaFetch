@@ -20,6 +20,8 @@ export interface AddMediaItem {
   status?: "WATCHED" | "READ" | "ONGOING" | "PLANNING";
   favorite?: boolean;
   currentProgress?: number;
+  nextEpisode?: number | null;
+  nextAiringAt?: number | null;
 }
 
 interface AddMediaModalProps {
@@ -90,6 +92,8 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
           status,
           favorite,
           item.summary || "",
+          item.nextEpisode ?? null,
+          item.nextAiringAt ?? null,
         );
       }
       onClose();

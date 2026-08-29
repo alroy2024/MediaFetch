@@ -27,6 +27,12 @@ public class Media {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "next_episode")
+    private Integer nextEpisode;
+
+    @Column(name = "next_airing_at")
+    private Long nextAiringAt;
+
 
 
     @Column(nullable = false)
