@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { Anime, Manga, Novel } from "../components/Mulcomponents";
 import { useValidToken } from '../hooks/useValidToken';
 
-const tabs = ["Manga", "Novel", "Anime"] as const;
+const tabs = ["Anime", "Novel", "Manga"] as const;
 
 function Home() {
-    const [select, setSelected] = useState<(typeof tabs)[number]>("Manga");
+    const [select, setSelected] = useState<(typeof tabs)[number]>("Anime");
     const token = useValidToken();
 
     return (
