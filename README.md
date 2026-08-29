@@ -4,7 +4,7 @@ MediaFetch is a modern web application designed to search, track, and sync your 
 
 ---
 
-## 🏗️ Architectural Design
+## Architectural Design
 
 1. **Hybrid Database Strategy**: The application avoids caching entire catalogs (such as WebNovel's database). Instead, search queries are executed dynamically via scraping (using Microsoft Playwright) or public APIs. Novel/Show metadata is only persisted to the PostgreSQL database when a user actively adds a title to their tracking list.
 2. **Decoupled Scraper Architecture**: Scraping actions are completely isolated on the backend. This shields the frontend application from layout updates or design shifts on the third-party providers.
@@ -12,7 +12,7 @@ MediaFetch is a modern web application designed to search, track, and sync your 
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 * **Frontend**: React (v19), TypeScript, Vite, Tailwind CSS, React Router
 * **Backend**: Spring Boot (v4), Java 25, Playwright Java (for headless Chromium scraping), WebClient (for AniList/GraphQL API requests), JPA/Hibernate
@@ -21,7 +21,7 @@ MediaFetch is a modern web application designed to search, track, and sync your 
 
 ---
 
-## ⚙️ Environment Configuration
+## Environment Configuration
 
 Create a `.env` file in the root directory. You can use the values from `.env.example` as a starting template:
 
@@ -36,7 +36,7 @@ FRONTEND_URL = http://localhost:5173
 
 ---
 
-## 🚀 Local Development
+## Local Development
 
 ### 1. Database
 Make sure you have a PostgreSQL server running locally, and create a database named `mediafetch`.
@@ -68,7 +68,7 @@ Make sure you have a PostgreSQL server running locally, and create a database na
 
 ---
 
-## 🐳 Docker Deployment (Production)
+## Docker Deployment (Production)
 
 The application is containerized and configured for quick deployment using Docker Compose.
 
