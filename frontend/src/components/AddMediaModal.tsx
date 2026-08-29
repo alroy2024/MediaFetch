@@ -149,18 +149,22 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
               className="mt-2 w-full border-b border-slate-800 bg-transparent py-1.5 text-2xl font-bold text-white outline-none focus:border-indigo-500 transition-colors"
             />
           </label>
-          {(item.mediaType === "ANIME" || item.mediaType === "MANGA") && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4 flex flex-col justify-center">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-555 text-slate-500">
-                {item.mediaType === "ANIME" ? "Current total episodes" : "Chapter status"}
-              </span>
-              <strong className="mt-2 block text-2xl font-extrabold text-white">
-                {item.isOngoing
-                  ? "Ongoing"
-                  : item.totalProgress == null ? "Unavailable" : item.totalProgress}
-              </strong>
-            </div>
-          )}
+          <div className="rounded-2xl border border-slate-800 bg-slate-950/40 p-4 flex flex-col justify-center">
+            <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              {item.mediaType === "ANIME"
+                ? "Current total episodes"
+                : item.mediaType === "MANGA"
+                ? "Chapter status"
+                : "Total Chapters"}
+            </span>
+            <strong className="mt-2 block text-2xl font-extrabold text-white">
+              {item.mediaType === "NOVEL"
+                ? (item.totalProgress == null || item.totalProgress === 0 ? "Unavailable" : item.totalProgress)
+                : item.isOngoing
+                ? "Ongoing"
+                : item.totalProgress == null ? "Unavailable" : item.totalProgress}
+            </strong>
+          </div>
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">

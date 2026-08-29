@@ -26,8 +26,20 @@ public class NovelService {
     @Transactional
     public void novelAdd(NovelDto novelDto, String username){
         User user = getUser(username);
-        if (userNovelRepository.existsByUserIdAndNovelId(user.getId(), novelDto.id())) {
-            throw new IllegalArgumentException("Novel already added to your list");
+        
+        java.util.Optional<UserNovel> existing = userNovelRepository.findByUserIdAndNovelId(user.getId(), novelDto.id());
+        if (existing.isPresent()) {
+            UserNovel userNovel = existing.get();
+            int currentProgress = Math.max(0, novelDto.currentChapter() == null ? 0 : novelDto.currentChapter());
+            Novel novel = userNovel.getNovel();
+            if (novel.getTotalChapter() > 0) {
+                currentProgress = Math.min(currentProgress, novel.getTotalChapter());
+            }
+            userNovel.setCurrentChapter(currentProgress);
+            userNovel.setStatus(normalizeStatus(novelDto.status()));
+            userNovel.setFavorite(Boolean.TRUE.equals(novelDto.favorite()));
+            userNovelRepository.save(userNovel);
+            return;
         }
 
         Novel novel = novelRepository.findById(novelDto.id()).orElseGet(() -> {

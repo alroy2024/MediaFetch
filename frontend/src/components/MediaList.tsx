@@ -19,6 +19,7 @@ interface Media {
   favorite?: boolean | null;
   currentChapter?: number | null;
   totalChapter?: number | null;
+  description?: string | null;
 };
 
 type Filter = "ALL" | "ONGOING" | "PLANNING" | "COMPLETED" | "FAVORITE";
@@ -132,6 +133,7 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
         ? isNovelList ? "READ" : "WATCHED"
         : media.status ?? "ONGOING",
       favorite: media.favorite ?? false,
+      summary: media.description ?? "",
     });
   };
 

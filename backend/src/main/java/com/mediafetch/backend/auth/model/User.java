@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.mediafetch.backend.media.model.Media;
 import com.mediafetch.backend.media.model.UserMedia;
-import com.mediafetch.backend.novel.model.Novel;
 import com.mediafetch.backend.novel.model.UserNovel;
 
 import java.util.*;
@@ -18,8 +16,8 @@ import lombok.AllArgsConstructor;
 
 @Entity
 @Table(name = "users")
-@Getter 
-@Setter 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
@@ -40,7 +38,7 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(lombok.AccessLevel.NONE)
-    private Set<UserMedia> userMedias = new HashSet<>(); 
+    private Set<UserMedia> userMedias = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @Setter(lombok.AccessLevel.NONE)
@@ -53,8 +51,10 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof User))
+            return false;
         User other = (User) o;
         return id != null && id.equals(other.getId());
     }

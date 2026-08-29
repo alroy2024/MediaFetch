@@ -17,4 +17,8 @@ public interface UserNovelRepository extends JpaRepository<UserNovel, Long> {
 
     @Query("SELECT COUNT(un) > 0 FROM UserNovel un WHERE un.user.id = :userId AND un.novel.id = :novelId")
     boolean existsByUserIdAndNovelId(@Param("userId") Long userId, @Param("novelId") Long novelId);
+
+    @Query("SELECT un FROM UserNovel un JOIN FETCH un.user WHERE un.novel.id = :novelId")
+    List<UserNovel> findByNovelId(@Param("novelId") Long novelId);
 }
+
