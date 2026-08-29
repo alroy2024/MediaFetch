@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 export default async function useAddNovel(
     id: number,
     title: string,
@@ -10,7 +12,7 @@ export default async function useAddNovel(
     status: string,
     favorite: boolean,
 ) {
-    await fetch('http://localhost:8080/novels/add',
+    await fetch(`${API_BASE_URL}/novels/add`,
         {
             method: 'POST',
             headers: {

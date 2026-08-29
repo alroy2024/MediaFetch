@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 
 interface Mediaprops {
   token: string;
@@ -16,7 +17,7 @@ const NovelList = ({token}: Mediaprops) => {
   useEffect(() => {
     async function getNovelList() {
       try {
-        const response = await fetch("http://localhost:8080/novels", {
+        const response = await fetch(`${API_BASE_URL}/novels`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

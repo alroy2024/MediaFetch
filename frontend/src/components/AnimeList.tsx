@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 interface Mediaprops {
     token: string;
@@ -32,7 +33,7 @@ export default function AnimeList(props: Mediaprops) {
     useEffect(() => {
         async function getAnimeList() {
             try {
-                const response = await fetch('http://localhost:8080/anime', {
+                const response = await fetch(`${API_BASE_URL}/anime`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${props.token}`,
@@ -45,7 +46,7 @@ export default function AnimeList(props: Mediaprops) {
                 const data = await response.json();
                 setAnimeList(data);
             } catch (error) {
-                console.log('Error fetching Anime list:', error);
+                console.error('Error fetching Anime list:', error);
             }
         }
         getAnimeList();
@@ -62,7 +63,7 @@ export default function AnimeList(props: Mediaprops) {
         );
     }
     return (
-        <div className="w-full max-w-6xl space-y-10 p-6 bg-slate-900 border border-slate-800/80 rounded-2xl shadow-md mt-6">
+        <div className="w-full max-w-6xl space-y-2 p-6 bg-slate-900 border border-slate-800/80 rounded-2xl shadow-md mt-6">
             <div className="w-full">
                 <div className="flex items-center gap-2 mb-4 border-b border-slate-800 pb-3">
                     <span className="relative flex h-2.5 w-2.5">

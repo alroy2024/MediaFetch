@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 interface Mediaprops {
     token: string;
@@ -9,8 +10,8 @@ interface MangaList {
         releasing: {
             media: Manga[]
         }
-        finished: { 
-            media: Manga[] 
+        finished: {
+            media: Manga[]
         }
     }
 }
@@ -32,7 +33,7 @@ export default function MangaList(props: Mediaprops) {
     useEffect(() => {
         async function getMangaList() {
             try {
-                const response = await fetch('http://localhost:8080/manga', {
+                const response = await fetch(`${API_BASE_URL}/manga`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${props.token}`,
@@ -63,7 +64,7 @@ export default function MangaList(props: Mediaprops) {
     }
 
     return (
-        <div className="w-full max-w-6xl space-y-10 p-6 bg-slate-900 border border-slate-800/80 rounded-2xl shadow-md mt-6">
+        <div className="w-full max-w-6xl space-y-2 p-4 bg-slate-900 border border-slate-800/80 rounded-2xl shadow-md mt-6">
             <div className="w-full">
                 <div className="flex items-center gap-2 mb-4 border-b border-slate-800 pb-3">
                     <span className="relative flex h-2.5 w-2.5">

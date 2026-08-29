@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
       JWT_SECRET: "${JWT_SECRET}"
       JWT_EXPIRATION: "${JWT_EXPIRATION}"
+      FRONTEND_URL: "${FRONTEND_URL}"
     depends_on:
       - db
     networks:

@@ -29,7 +29,7 @@ public class NovelFetchService {
     public void init() {
         logger.info("Initializing Playwright and launching browser...");
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
     }
 
     @PreDestroy
@@ -45,7 +45,8 @@ public class NovelFetchService {
         String query = requestDto.searchQuery();
         List<NovelDto> results = new ArrayList<>();
 
-        try (BrowserContext context = browser.newContext();
+        try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"));
                 Page page = context.newPage()) {
 
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
@@ -77,7 +78,8 @@ public class NovelFetchService {
     public List<NovelDto> getTopNovelDtos() {
         List<NovelDto> results = new ArrayList<>();
 
-        try (BrowserContext context = browser.newContext();
+        try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"));
                 Page page = context.newPage()) {
 
             page.navigate("https://www.webnovel.com/stories");
@@ -109,20 +111,21 @@ public class NovelFetchService {
         return results;
     }
 
-public int fetchCurrentChapter(String url) {
-        try (BrowserContext context = browser.newContext();
+    public int fetchCurrentChapter(String url) {
+        try (BrowserContext context = browser.newContext(new Browser.NewContextOptions()
+                .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"));
                 Page page = context.newPage()) {
             if (url == null || url.isBlank()) {
                 logger.warn("Cannot fetch chapter count because the novel URL is missing");
                 return 0;
             }
-            
+
             page.navigate(url);
 
             // Wait up to 10 seconds, but catch the exception so it doesn't crash the loop
             try {
-                page.waitForSelector("strong:has(use[href='#i-chapter']) span", 
-                    new Page.WaitForSelectorOptions().setTimeout(500));
+                page.waitForSelector("strong:has(use[href='#i-chapter']) span",
+                        new Page.WaitForSelectorOptions().setTimeout(500));
             } catch (Exception e) {
                 logger.warn("Timeout waiting for chapter element on URL: {}. Trying alternative selector...", url);
             }
@@ -132,15 +135,18 @@ public int fetchCurrentChapter(String url) {
             if (chaptersContainer.count() > 0) {
                 String text = chaptersContainer.first().innerText();
                 int chapters = extractNumber(text);
-                if (chapters > 0) return chapters;
+                if (chapters > 0)
+                    return chapters;
             }
 
-            // Fallback selector: Look for any text containing "Chs" or "Chapters" if the SVG layout changed
+            // Fallback selector: Look for any text containing "Chs" or "Chapters" if the
+            // SVG layout changed
             Locator fallbackLocator = page.locator("text=/\\d+\\s*(Chs|Chapters)/i");
             if (fallbackLocator.count() > 0) {
                 String text = fallbackLocator.first().innerText();
                 int chapters = extractNumber(text);
-                if (chapters > 0) return chapters;
+                if (chapters > 0)
+                    return chapters;
             }
 
             logger.warn("Could not find chapter count for URL: {}", url);
@@ -152,7 +158,7 @@ public int fetchCurrentChapter(String url) {
             logger.error("An unexpected error occurred fetching chapter count for novel {}", url, e);
         }
         return 0;
-    }   
+    }
 
     private String normalizeUrl(String href) {
         if (href == null || href.isBlank()) {

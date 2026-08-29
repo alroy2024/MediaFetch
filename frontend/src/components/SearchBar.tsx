@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 import AddMediaModal, { type AddMediaItem } from './AddMediaModal';
 
 
@@ -50,7 +51,7 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
     const searchRequest = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/search", {
+        const response = await fetch(`${API_BASE_URL}/search`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -63,7 +64,6 @@ export default function SearchBar({ onClose, token, mediaType }: SearchBarProps)
           })
         });
         const data = await response.json();
-        console.log(data)
         if (data) {
           setResults(data.data.Page.media);
         }

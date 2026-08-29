@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 import SearchBar from "./SearchBar"
 import NovelSearchBar from "./NovelSearchBar"
 import AddMediaModal, { type AddMediaItem } from "./AddMediaModal";
@@ -41,8 +42,8 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
       try {
         const response = await fetch(
           isNovelList
-            ? "http://localhost:8080/novels/mylist"
-            : `http://localhost:8080/mylist?type=${mediaType}`,
+            ? `${API_BASE_URL}/novels/mylist`
+            : `${API_BASE_URL}/mylist?type=${mediaType}`,
           {
           method: "GET",
           headers: {

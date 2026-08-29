@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config';
+
 export default async function useAddtoList(
     id: number,
     english: string,
@@ -13,7 +15,7 @@ export default async function useAddtoList(
     nextEpisode: number | null,
     nextAiringAt: number | null,
 ) {
-    await fetch('http://localhost:8080/add',
+    await fetch(`${API_BASE_URL}/add`,
         {
             method: 'POST',
             headers: {

@@ -1,6 +1,8 @@
+import { API_BASE_URL } from '../config';
+
 export default function useRemoveFromList() {
     const removeMedia = async (id: number, token: string) => {
-        const response = await fetch('http://localhost:8080/remove',
+        const response = await fetch(`${API_BASE_URL}/remove`,
             {
                 method: 'POST',
                 headers: {

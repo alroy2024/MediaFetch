@@ -1,13 +1,13 @@
+import { API_BASE_URL } from '../config';
+
 export async function authenticate(
     username: string,
     password: string,
     email: string,
     login: boolean
 ) {
-    const endpoint = login ? 'http://localhost:8080/auth/login' : 'http://localhost:8080/auth/register'
+    const endpoint = login ? `${API_BASE_URL}/auth/login` : `${API_BASE_URL}/auth/register`
     const params = login ? { username, password } : { username, password, email }
-
-    console.log('Welcome ', username)
 
     const response = await fetch(endpoint, {
         method: 'POST',
@@ -20,5 +20,4 @@ export async function authenticate(
     const data = await response.json();
 
     return { response, data };
-
 }

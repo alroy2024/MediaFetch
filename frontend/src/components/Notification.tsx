@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
 import { Link } from "react-router-dom";
 import { useValidToken } from "../hooks/useValidToken";
 
@@ -19,7 +20,7 @@ export default function Notification() {
   const fetchNotifications = async () => {
     if (!token) return;
     try {
-      const response = await fetch("http://localhost:8080/notifications", {
+      const response = await fetch(`${API_BASE_URL}/notifications`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -43,7 +44,7 @@ export default function Notification() {
   const handleDismiss = async (id: number) => {
     if (!token) return;
     try {
-      const response = await fetch(`http://localhost:8080/notifications/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,7 +66,7 @@ export default function Notification() {
     setIsSyncing(true);
     setSyncStatus("Checking for updates (scraping)...");
     try {
-      const response = await fetch("http://localhost:8080/notifications/trigger-update", {
+      const response = await fetch(`${API_BASE_URL}/notifications/trigger-update`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -153,16 +154,16 @@ export default function Notification() {
                   <button
                     onClick={handleSync}
                     disabled={isSyncing}
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-xs font-bold transition-all shadow-md shadow-indigo-600/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-xs font-bold transition-all shadow-md shadow-indigo-600/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
                   >
                     {isSyncing ? (
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-3.5 h-3.5 shrink-0 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     ) : (
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18.5" />
+                      <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                       </svg>
                     )}
-                    Check Updates
+                    <span>Check Updates</span>
                   </button>
                 </div>
               </div>
