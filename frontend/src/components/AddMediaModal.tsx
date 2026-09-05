@@ -29,9 +29,10 @@ interface AddMediaModalProps {
   onClose: () => void;
   isDelete?: boolean;
   onDelete?: () => Promise<void>;
+  onUpdate?: (currentProgress: number, status: string, favorite: boolean) => Promise<void>;
 }
 
-export default function AddMediaModal({ item, onClose, isDelete = false, onDelete }: AddMediaModalProps) {
+export default function AddMediaModal({ item, onClose, isDelete = false, onDelete, onUpdate }: AddMediaModalProps) {
   const [progress, setProgress] = useState<number | "">(item.currentProgress ?? 0);
   const [status, setStatus] = useState<"WATCHED" | "READ" | "ONGOING" | "PLANNING">(item.status ?? "ONGOING");
   const [favorite, setFavorite] = useState(item.favorite ?? false);
@@ -47,6 +48,20 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
       onClose();
     } catch {
       setError("Unable to delete this item. Please try again.");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!onUpdate) return;
+    setIsAdding(true);
+    setError("");
+    try {
+      await onUpdate(progress === "" ? 0 : progress, status, favorite);
+      onClose();
+    } catch {
+      setError("Unable to update this item. Please try again.");
     } finally {
       setIsAdding(false);
     }
@@ -141,41 +156,49 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
-            <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-500">
-              {item.progressLabel} reached
-            </span>
-            <input
-              type="number"
-              min="0"
-              max={item.totalProgress ?? undefined}
-              value={item.isUpcoming ? 0 : progress}
-              disabled={item.isUpcoming}
-              onChange={(event) => {
-                const val = event.target.value;
-                if (val === "") {
-                  setProgress("");
-                } else {
-                  let num = Math.max(0, parseInt(val, 10) || 0);
-                  if (item.totalProgress != null && item.totalProgress > 0) {
-                    num = Math.min(num, item.totalProgress);
+          {item.mediaType !== "MANGA" && (
+            <label className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+              <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                {item.progressLabel} reached
+              </span>
+              <input
+                type="number"
+                min="0"
+                max={item.totalProgress ?? undefined}
+                value={item.isUpcoming ? 0 : progress}
+                disabled={item.isUpcoming}
+                onChange={(event) => {
+                  const val = event.target.value;
+                  if (val === "") {
+                    setProgress("");
+                  } else {
+                    let num = Math.max(0, parseInt(val, 10) || 0);
+                    if (item.totalProgress != null && item.totalProgress > 0) {
+                      num = Math.min(num, item.totalProgress);
+                    }
+                    setProgress(num);
                   }
-                  setProgress(num);
-                }
-              }}
-              className="mt-1 w-full border-b border-slate-800 bg-transparent py-0.5 text-xl font-bold text-white outline-none focus:border-indigo-500 transition-colors"
-            />
-          </label>
-          <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3 flex flex-col justify-center">
+                }}
+                className="mt-1 w-full border-b border-slate-800 bg-transparent py-0.5 text-xl font-bold text-white outline-none focus:border-indigo-500 transition-colors"
+              />
+            </label>
+          )}
+          <div className={`rounded-xl border border-slate-800 bg-slate-950/40 p-3 flex flex-col justify-center ${
+            item.mediaType === "MANGA" ? "sm:col-span-2 sm:mx-auto sm:w-1/2" : ""
+          }`}>
             <span className="block text-[9px] font-bold uppercase tracking-wider text-slate-500">
               {item.mediaType === "ANIME"
                 ? "Current total episodes"
                 : item.mediaType === "MANGA"
-                ? "Chapter status"
+                ? "Manga Status"
                 : "Total Chapters"}
             </span>
-            <strong className="mt-1 block text-xl font-extrabold text-white">
-              {item.mediaType === "NOVEL"
+            <strong className="mt-1 block text-xm font-extrabold text-white">
+              {item.mediaType === "MANGA"
+                ? item.isOngoing || item.totalProgress == null || item.totalProgress === 0
+                  ? "Ongoing"
+                  : "Finished"
+                : item.mediaType === "NOVEL"
                 ? (item.totalProgress == null || item.totalProgress === 0 ? "Unavailable" : item.totalProgress)
                 : (item.isOngoing || item.totalProgress === 0)
                 ? "Ongoing"
@@ -222,6 +245,16 @@ export default function AddMediaModal({ item, onClose, isDelete = false, onDelet
           >
             Cancel
           </button>
+          {isDelete && (
+            <button
+              type="button"
+              onClick={handleUpdate}
+              disabled={isAdding || !onUpdate}
+              className="rounded-lg bg-indigo-600 hover:bg-indigo-700 px-5 py-2 text-xs font-bold text-white transition disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer shadow-sm shadow-indigo-600/10"
+            >
+              {isAdding ? "Updating..." : "Update"}
+            </button>
+          )}
           <button
             type="button"
             onClick={isDelete ? handleDelete : handleAdd}

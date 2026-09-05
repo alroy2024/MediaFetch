@@ -12,7 +12,7 @@ export default async function useAddNovel(
     status: string,
     favorite: boolean,
 ) {
-    await fetch(`${API_BASE_URL}/novels/add`,
+    const response = await fetch(`${API_BASE_URL}/novels/add`,
         {
             method: 'POST',
             headers: {
@@ -31,5 +31,8 @@ export default async function useAddNovel(
                 favorite: favorite,
             })
         }
-    )
+    );
+    if (!response.ok) {
+        throw new Error(`Novel add request failed: ${response.status}`);
+    }
 }

@@ -9,6 +9,7 @@ import com.mediafetch.backend.auth.model.User;
 import com.mediafetch.backend.auth.repository.UserRepository;
 import com.mediafetch.backend.media.dto.AddDto;
 import com.mediafetch.backend.media.dto.RemoveDto;
+import com.mediafetch.backend.media.dto.UpdateDto;
 import com.mediafetch.backend.media.dto.UserMediaDto;
 import com.mediafetch.backend.media.model.Media;
 import com.mediafetch.backend.media.model.UserMedia;
@@ -88,6 +89,23 @@ public class MediaListService {
         UserMedia userMedia = userMediaRepository.findByUserIdAndMediaId(user.getId(), id)
                 .orElseThrow(() -> new IllegalArgumentException("Media not found in your list"));
         userMediaRepository.delete(userMedia);
+    }
+
+    @Transactional
+    public void mediaUpdate(UpdateDto request, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        UserMedia userMedia = userMediaRepository.findByUserIdAndMediaId(user.getId(), request.id())
+                .orElseThrow(() -> new IllegalArgumentException("Media not found in your list"));
+        int currentChapter = Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter());
+        Integer totalChapter = userMedia.getMedia().getTotalChapter();
+        if (totalChapter != null && totalChapter > 0) {
+            currentChapter = Math.min(currentChapter, totalChapter);
+        }
+        userMedia.setCurrentChapter(currentChapter);
+        userMedia.setStatus(normalizeStatus(request.status(), userMedia.getMedia().getType()));
+        userMedia.setFavorite(Boolean.TRUE.equals(request.favorite()));
+        userMediaRepository.save(userMedia);
     }
 
     private void validateType(String type) {

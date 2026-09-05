@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.mediafetch.backend.auth.model.User;
 import com.mediafetch.backend.auth.repository.UserRepository;
 import com.mediafetch.backend.novel.dto.NovelDto;
+import com.mediafetch.backend.novel.dto.UpdateDto;
 import com.mediafetch.backend.novel.model.Novel;
 import com.mediafetch.backend.novel.model.UserNovel;
 import com.mediafetch.backend.novel.repository.NovelRepository;
@@ -92,6 +93,22 @@ public class NovelService {
         UserNovel userNovel = userNovelRepository.findByUserIdAndNovelId(user.getId(), novelId)
                 .orElseThrow(() -> new IllegalArgumentException("Novel not found in your list"));
         userNovelRepository.delete(userNovel);
+    }
+
+    @Transactional
+    public void novelUpdate(UpdateDto request, String username) {
+        User user = getUser(username);
+        UserNovel userNovel = userNovelRepository.findByUserIdAndNovelId(user.getId(), request.id())
+                .orElseThrow(() -> new IllegalArgumentException("Novel not found in your list"));
+        int currentChapter = Math.max(0, request.currentChapter() == null ? 0 : request.currentChapter());
+        Integer totalChapter = userNovel.getNovel().getTotalChapter();
+        if (totalChapter != null && totalChapter > 0) {
+            currentChapter = Math.min(currentChapter, totalChapter);
+        }
+        userNovel.setCurrentChapter(currentChapter);
+        userNovel.setStatus(normalizeStatus(request.status()));
+        userNovel.setFavorite(Boolean.TRUE.equals(request.favorite()));
+        userNovelRepository.save(userNovel);
     }
 
     private User getUser(String username) {

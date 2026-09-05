@@ -51,7 +51,6 @@ public class NovelFetchService {
 
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
             page.navigate("https://www.webnovel.com/search?keywords=" + encodedQuery);
-
             page.waitForSelector("ul.j_result_wrap");
             Locator books = page.locator("ul.j_result_wrap li:has(a.g_thumb)");
 
@@ -61,10 +60,8 @@ public class NovelFetchService {
                 String image = item.locator("img").getAttribute("src");
                 String url = normalizeUrl(item.locator("a.g_thumb").getAttribute("href"));
                 String description = getOptionalText(item.locator("p.fs16.c_000.ells._2.lh24"));
-                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false);
-                results.add(dto);
+                results.add(new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false));
             }
-
         } catch (PlaywrightException e) {
             logger.error("Playwright failed to scrape titles for query: {}", query, e);
         } catch (Exception e) {
@@ -86,7 +83,6 @@ public class NovelFetchService {
             page.waitForSelector("ul.clearfix");
             page.evaluate("window.scrollBy(0, window.innerHeight)");
             page.waitForTimeout(1500);
-
             Locator books = page.locator("ul.clearfix li:has(a.g_thumb)");
 
             for (Locator item : books.all()) {
@@ -95,13 +91,11 @@ public class NovelFetchService {
                 String image = item.locator("img").getAttribute("src");
                 String url = normalizeUrl(item.locator("a.g_thumb").getAttribute("href"));
                 String description = getOptionalText(item.locator("p.fs16.c_000.ells._2.lh24"));
-                NovelDto dto = new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false);
-                results.add(dto);
+                results.add(new NovelDto(id, title, image, url, description, 0, 0, "ONGOING", false));
                 if (results.size() > 19) {
                     break;
                 }
             }
-
         } catch (PlaywrightException e) {
             logger.error("Playwright failed to scrape top novels", e);
         } catch (Exception e) {
@@ -121,8 +115,6 @@ public class NovelFetchService {
             }
 
             page.navigate(url);
-
-            // Wait up to 10 seconds, but catch the exception so it doesn't crash the loop
             try {
                 page.waitForSelector("strong:has(use[href='#i-chapter']) span",
                         new Page.WaitForSelectorOptions().setTimeout(500));
@@ -130,28 +122,21 @@ public class NovelFetchService {
                 logger.warn("Timeout waiting for chapter element on URL: {}. Trying alternative selector...", url);
             }
 
-            // Try primary selector first
             Locator chaptersContainer = page.locator("strong:has(use[href='#i-chapter']) span");
             if (chaptersContainer.count() > 0) {
-                String text = chaptersContainer.first().innerText();
-                int chapters = extractNumber(text);
+                int chapters = extractNumber(chaptersContainer.first().innerText());
                 if (chapters > 0)
                     return chapters;
             }
 
-            // Fallback selector: Look for any text containing "Chs" or "Chapters" if the
-            // SVG layout changed
             Locator fallbackLocator = page.locator("text=/\\d+\\s*(Chs|Chapters)/i");
             if (fallbackLocator.count() > 0) {
-                String text = fallbackLocator.first().innerText();
-                int chapters = extractNumber(text);
+                int chapters = extractNumber(fallbackLocator.first().innerText());
                 if (chapters > 0)
                     return chapters;
             }
 
             logger.warn("Could not find chapter count for URL: {}", url);
-            return 0;
-
         } catch (PlaywrightException e) {
             logger.error("Playwright failed to fetch chapter count for novel {}", url, e);
         } catch (Exception e) {
@@ -164,10 +149,7 @@ public class NovelFetchService {
         if (href == null || href.isBlank()) {
             return "";
         }
-        if (href.startsWith("http")) {
-            return href;
-        }
-        return "https://www.webnovel.com" + href;
+        return href.startsWith("http") ? href : "https://www.webnovel.com" + href;
     }
 
     private String getOptionalText(Locator locator) {

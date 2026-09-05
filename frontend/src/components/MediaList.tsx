@@ -5,6 +5,8 @@ import NovelSearchBar from "./NovelSearchBar"
 import AddMediaModal, { type AddMediaItem } from "./AddMediaModal";
 import useRemoveFromList from '../hooks/useRemoveFromList';
 import useRemoveNovel from '../hooks/useRemoveNovel';
+import useUpdateMedia from '../hooks/useUpdateMedia';
+import useUpdateNovel from '../hooks/useUpdateNovel';
 
 interface Mediaprops {
   token: string;
@@ -35,6 +37,8 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
 
   const handleRemove = useRemoveFromList(); 
   const handleRemoveNovel = useRemoveNovel();
+  const handleUpdate = useUpdateMedia();
+  const handleUpdateNovel = useUpdateNovel();
   const isNovelList = listType === "novel";
 
   useEffect(() => {
@@ -259,6 +263,18 @@ const MyList = ({token, listType, mediaType}: Mediaprops) => {
               await handleRemove(selectedMedia.id, token);
             }
             setmyList((currentItems) => currentItems?.filter((item) => item.id !== selectedMedia.id) ?? null);
+          }}
+          onUpdate={async (currentProgress, status, favorite) => {
+            if (selectedMedia.mediaType === "NOVEL") {
+              await handleUpdateNovel(selectedMedia.id, currentProgress, status, favorite, token);
+            } else {
+              await handleUpdate(selectedMedia.id, currentProgress, status, favorite, token);
+            }
+            setmyList((currentItems) => currentItems?.map((item) =>
+              item.id === selectedMedia.id
+                ? { ...item, currentChapter: currentProgress, status: status as Media["status"], favorite }
+                : item,
+            ) ?? null);
           }}
         />
       )}

@@ -14,15 +14,18 @@ import com.mediafetch.backend.media.dto.MediaList;
 import com.mediafetch.backend.media.dto.MediaSearchDto;
 import com.mediafetch.backend.media.dto.RemoveDto;
 import com.mediafetch.backend.media.dto.RequestDto;
+import com.mediafetch.backend.media.dto.UpdateDto;
 import com.mediafetch.backend.media.dto.UserMediaDto;
-import com.mediafetch.backend.media.service.*;
+import com.mediafetch.backend.media.service.MediaFetchService;
+import com.mediafetch.backend.media.service.MediaListService;
+import com.mediafetch.backend.media.service.MediaSearchService;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class Mediacontroller {
+public class MediaController {
 
     private final MediaFetchService mediaFetchService;
     private final MediaSearchService mediaSearchService;
@@ -47,19 +50,21 @@ public class Mediacontroller {
 
     @PostMapping("/add")
     public void add(@RequestBody AddDto request, @AuthenticationPrincipal UserDetails currentUser) {
-        String username = currentUser.getUsername();
-        mediaListService.mediaAdd(request, username);
+        mediaListService.mediaAdd(request, currentUser.getUsername());
     }
 
     @PostMapping("/remove")
     public void remove(@RequestBody RemoveDto request, @AuthenticationPrincipal UserDetails currentUser) {
-        String username = currentUser.getUsername();
-        mediaListService.mediaRemove(request, username);
+        mediaListService.mediaRemove(request, currentUser.getUsername());
+    }
+
+    @PostMapping("/update")
+    public void update(@RequestBody UpdateDto request, @AuthenticationPrincipal UserDetails currentUser) {
+        mediaListService.mediaUpdate(request, currentUser.getUsername());
     }
 
     @GetMapping("/mylist")
     public List<UserMediaDto> mylist(@RequestParam String type, @AuthenticationPrincipal UserDetails currentUser) {
-        String username = currentUser.getUsername();
-        return mediaListService.mediaList(username, type.toUpperCase());
+        return mediaListService.mediaList(currentUser.getUsername(), type.toUpperCase());
     }
 }

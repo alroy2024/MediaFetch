@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.mediafetch.backend.novel.dto.RequestDto;
 import com.mediafetch.backend.novel.dto.NovelDto;
+import com.mediafetch.backend.novel.dto.UpdateDto;
 import com.mediafetch.backend.novel.service.NovelService;
 import com.mediafetch.backend.novel.service.NovelFetchService;
 
@@ -41,6 +42,12 @@ public class NovelController {
     public void novelRemove(@PathVariable Long novelId,
                             @AuthenticationPrincipal UserDetails currentUser) {
         novelService.novelRemove(novelId, currentUser.getUsername());
+    }
+
+    @PostMapping("/update")
+    public void novelUpdate(@RequestBody UpdateDto request,
+                            @AuthenticationPrincipal UserDetails currentUser) {
+        novelService.novelUpdate(request, currentUser.getUsername());
     }
 
     @PostMapping

@@ -24,15 +24,12 @@ public class Novel {
     @Column(nullable = false)
     private String image;
 
+    @Column
     private String url;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-
-
     @Column(nullable = false)
     private Integer totalChapter = 0;
-
-
 }
