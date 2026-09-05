@@ -33,14 +33,7 @@ public class Media {
     @Column(name = "next_airing_at")
     private Long nextAiringAt;
 
-
-
     @Column(nullable = false)
     private Integer totalChapter = 0;
 
-
-
-    // Reverse navigation is intentionally disabled until user-based media search is implemented.
-    // @ManyToMany(mappedBy = "medias")
-    // private Set<User> users = new HashSet<>();
 }
