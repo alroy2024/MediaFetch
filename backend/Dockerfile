@@ -2,7 +2,7 @@
 
 #Stage 1 Building the jar
 
-FROM maven:3.9-eclipse-temurin-25 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app    
 
 COPY pom.xml .
@@ -13,7 +13,7 @@ RUN mvn clean package -DskipTests
 #Stage 2 Running the Application
 
 #Stage 2 Running the Application
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Install system dependencies for Selenium/Chromium (fixed package names)
