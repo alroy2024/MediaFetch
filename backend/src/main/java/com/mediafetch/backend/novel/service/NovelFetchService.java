@@ -29,7 +29,17 @@ public class NovelFetchService {
     public void init() {
         logger.info("Initializing Playwright and launching browser...");
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true).setArgs(List.of(
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage", // Mandatory for Docker/Render
+                        "--disable-gpu",
+                        "--single-process",        // Reduces Chromium from 4 processes to 1
+                        "--no-zygote",
+                        "--disable-extensions",
+                        "--renderer-process-limit=1",
+                        "--js-flags=--max-old-space-size=128" // Constrains V8 engine memory
+                )));
     }
 
     @PreDestroy
