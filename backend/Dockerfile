@@ -17,7 +17,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Install system dependencies for Selenium/Chromium (fixed package names)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     libnss3 \
     libnspr4 \
     libatk1.0-0 \
@@ -37,5 +38,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/target/*.jar app.jar
+RUN java -cp app.jar com.microsoft.playwright.CLI install --with-deps chromium
+ENV PORT=8080
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
