@@ -11,9 +11,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
-import org.springframework.web.filter.CorsFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +29,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // Automatically splits comma-separated URLs into a List (defaults to localhost if empty)
+    // Splits comma-separated values, strips whitespace, defaults to localhost if empty
     @Value("#{'${mediafetch.cors.allowed-origin:http://localhost:5173}'.split(',')}")
     private List<String> allowedOrigins;
 
@@ -40,9 +37,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                // Let Spring Security manage CORS via the corsConfigurationSource bean directly
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Permit all OPTIONS preflight requests unconditionally
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.FORWARD, jakarta.servlet.DispatcherType.ERROR).permitAll()
                         .requestMatchers("/auth/**").permitAll()
@@ -56,10 +55,18 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Dynamically set purely from environment variables, trimmed of any accidental whitespace
-        configuration.setAllowedOrigins(allowedOrigins.stream().map(String::trim).toList());
+        // 1. Clean every origin: strip trailing slashes, spaces, and brackets
+        List<String> cleanedOrigins = allowedOrigins.stream()
+                .map(String::trim)
+                .map(url -> url.replaceAll("/+$", "")) // remove trailing slash
+                .toList();
+
+        // 2. setAllowedOriginPatterns works seamlessly with credentials and wildcards
+        configuration.setAllowedOriginPatterns(cleanedOrigins);
+
+        // 3. Permitted methods & headers
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin"));
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
@@ -67,12 +74,6 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public CorsFilter corsFilter() {
-        return new CorsFilter(corsConfigurationSource());
     }
 
     @Bean
