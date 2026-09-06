@@ -1,44 +1,20 @@
-#Multi Stage Build
-
-#Stage 1 Building the jar
-
+# Stage 1: Build JAR
 FROM maven:3.9-eclipse-temurin-21 AS build
-WORKDIR /app    
+WORKDIR /app
 
 COPY pom.xml .
 RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-#Stage 2 Running the Application
-
-#Stage 2 Running the Application
-FROM eclipse-temurin:21-jre
+# Stage 2: Runtime using official Playwright image
+FROM mcr.microsoft.com/playwright/java:v1.49.0-noble
 WORKDIR /app
 
-# Install system dependencies for Selenium/Chromium (fixed package names)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2t64 \
-    libpangocairo-1.0-0 \
-    libpango-1.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
+# Copy the fat jar from stage 1
 COPY --from=build /app/target/*.jar app.jar
-RUN java -cp app.jar com.microsoft.playwright.CLI install --with-deps chromium
+
 ENV PORT=8080
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
