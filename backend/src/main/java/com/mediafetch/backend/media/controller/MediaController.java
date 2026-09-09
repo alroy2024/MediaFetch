@@ -1,4 +1,4 @@
-package com.mediafetch.backend.media.controller;
+﻿package com.mediafetch.backend.media.controller;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +21,7 @@ import com.mediafetch.backend.media.service.MediaListService;
 import com.mediafetch.backend.media.service.MediaSearchService;
 
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
