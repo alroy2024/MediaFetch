@@ -19,8 +19,8 @@ interface AnimeList {
 type Anime = {
     id: number
     title: {
-        romaji: string
         english: string
+        romaji: string
     }
     coverImage: {
         large: string
