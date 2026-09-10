@@ -50,14 +50,18 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOriginPattern(allowedOrigin);
-        if (!"http://localhost:5173".equals(allowedOrigin)) {
-            configuration.addAllowedOriginPattern("http://localhost:5173");
+        if (allowedOrigin != null && !allowedOrigin.isBlank()) {
+            configuration.addAllowedOriginPattern(allowedOrigin);
         }
+
+        configuration.addAllowedOriginPattern("https://mediafetch-brfs.onrender.com");
+        configuration.addAllowedOriginPattern("https://*.onrender.com");
+        configuration.addAllowedOriginPattern("http://localhost:5173");
         configuration.addAllowedOriginPattern("http://localhost");
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(86400L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
